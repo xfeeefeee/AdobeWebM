@@ -2418,7 +2418,7 @@ SDKImportAudio7(
 
 		// for surround channels
 		// Premiere uses Left, Right, Left Rear, Right Rear, Center, LFE
-		// Ogg (and Opus) uses Left, Center, Right, Left Read, Right Rear, LFE
+		// Ogg (and Opus) uses Left, Center, Right, Left Rear, Right Rear, LFE
 		// http://www.xiph.org/vorbis/doc/Vorbis_I_spec.html#x1-800004.3.9
 		static const int surround_swizzle[] = {0, 2, 3, 4, 1, 5};
 		static const int stereo_swizzle[] = {0, 1, 2, 3, 4, 5}; // no swizzle, actually

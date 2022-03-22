@@ -1199,9 +1199,30 @@ exSDKExport(
 	
 	if(exportInfoP->exportAudio)
 	{
+		PrAudioChannelLabel monoOrder[1] = { kPrAudioChannelLabel_Discrete };
+												
+		PrAudioChannelLabel stereoOrder[2] = { kPrAudioChannelLabel_FrontLeft,
+												kPrAudioChannelLabel_FrontRight };
+													
+		// Premiere uses Left, Right, Left Rear, Right Rear, Center, LFE
+		// Opus and Vorbis use Left, Center, Right, Left Rear, Right Rear, LFE
+		// http://www.xiph.org/vorbis/doc/Vorbis_I_spec.html#x1-800004.3.9
+		PrAudioChannelLabel surroundOrder[6] = { kPrAudioChannelLabel_FrontLeft,
+													kPrAudioChannelLabel_FrontCenter,
+													kPrAudioChannelLabel_FrontRight,
+													kPrAudioChannelLabel_RearSurroundLeft,
+													kPrAudioChannelLabel_RearSurroundRight,
+													kPrAudioChannelLabel_LowFrequency };
+		
+		PrAudioChannelLabel *channelOrder = (audioFormat == kPrAudioChannelType_51 ? surroundOrder :
+												audioFormat == kPrAudioChannelType_Stereo ? stereoOrder :
+												audioFormat == kPrAudioChannelType_Mono ? monoOrder :
+												stereoOrder);
+		
 		result = audioSuite->MakeAudioRenderer(exID,
 												exportInfoP->startTime,
-												audioFormat,
+												audioChannels,
+												channelOrder,
 												kPrAudioSampleType_32BitFloat,
 												sampleRateP.value.floatValue, 
 												&audioRenderID);
@@ -1797,15 +1818,6 @@ exSDKExport(
 				
 				if(exportInfoP->exportAudio && !vbr_pass)
 				{
-					// Premiere uses Left, Right, Left Rear, Right Rear, Center, LFE
-					// Opus and Vorbis use Left, Center, Right, Left Read, Right Rear, LFE
-					// http://www.xiph.org/vorbis/doc/Vorbis_I_spec.html#x1-800004.3.9
-					static const int stereo_swizzle[] = {0, 1, 0, 1, 0, 1};
-					static const int surround_swizzle[] = {0, 4, 1, 2, 3, 5};
-					
-					const int *swizzle = (audioChannels > 2 ? surround_swizzle : stereo_swizzle);
-					
-					
 					const bool last_frame = (videoTime > (exportInfoP->endTime - frameRateP.value.timeValue));
 							
 					if(audioCodecP.value.intValue == WEBM_CODEC_OPUS)
@@ -1826,7 +1838,7 @@ exSDKExport(
 								{
 									for(int c=0; c < audioChannels; c++)
 									{
-										opus_buffer[(i * audioChannels) + c] = pr_audio_buffer[swizzle[c]][i];
+										opus_buffer[(i * audioChannels) + c] = pr_audio_buffer[c][i];
 									}
 								}
 								
@@ -1940,7 +1952,7 @@ exSDKExport(
 									{
 										for(int i=0; i < samples; i++)
 										{
-											buffer[c][i] = pr_audio_buffer[swizzle[c]][i];
+											buffer[c][i] = pr_audio_buffer[c][i];
 										}
 									}
 								}

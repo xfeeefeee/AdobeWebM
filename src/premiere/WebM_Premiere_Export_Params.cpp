@@ -1397,9 +1397,9 @@ exSDKGetParamSummary(
 	
 	
 
-	utf16ncpy(summaryRecP->Summary1, summary1.c_str(), 255);
-	utf16ncpy(summaryRecP->Summary2, summary2.c_str(), 255);
-	utf16ncpy(summaryRecP->Summary3, summary3.c_str(), 255);
+	utf16ncpy(summaryRecP->videoSummary, summary1.c_str(), 255);
+	utf16ncpy(summaryRecP->audioSummary, summary2.c_str(), 255);
+	utf16ncpy(summaryRecP->bitrateSummary, summary3.c_str(), 255);
 	
 	return malNoError;
 }
@@ -1794,6 +1794,7 @@ ConfigureEncoderPost(vpx_codec_ctx_t *encoder, const char *txt)
 			{
 				unsigned int ival = val == "default" ? VP9E_CONTENT_DEFAULT :
 									val == "screen" ? VP9E_CONTENT_SCREEN :
+									val == "film" ? VP9E_CONTENT_FILM :
 									VP9E_CONTENT_DEFAULT;
 			
 				ConfigureValue(encoder, VP9E_SET_TUNE_CONTENT, ival);

@@ -1,12 +1,11 @@
 ext
 ===
 
-This directory holds git submodules that point to libraries needed by the WebM and WebP plug-ins.
+This directory holds git submodules that point to libraries needed by the WebM plug-in.
 
 You will need to manually add the following to this directory because the owners don't have a git repository I can embed:
 
-* [Premiere CS5 SDK](http://www.adobe.com/devnet/premiere/sdk/cs5.html)
-* [Photoshop CS5 SDK](http://www.adobe.com/devnet/photoshop/sdk.html)
+* [Premiere CC 2019 (13.0) SDK](https://developer.adobe.com/content/udp/en/apis/creativecloud/premierepro.html)
 
 
 If the submodule contents are missing, you should be able to get them by typing:
