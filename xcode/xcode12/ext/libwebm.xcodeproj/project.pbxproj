@@ -1,0 +1,340 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2A62419827E656B600469462 /* mkvmuxertypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A623E0A27E656B100469462 /* mkvmuxertypes.h */; };
+		2A62419927E656B600469462 /* mkvmuxerutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A623E0B27E656B100469462 /* mkvmuxerutil.h */; };
+		2A62419A27E656B600469462 /* mkvwriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A623E0C27E656B100469462 /* mkvwriter.h */; };
+		2A62419B27E656B600469462 /* mkvmuxer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A623E0D27E656B100469462 /* mkvmuxer.h */; };
+		2A62419C27E656B600469462 /* mkvwriter.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2A623E0E27E656B100469462 /* mkvwriter.cc */; };
+		2A62419D27E656B600469462 /* mkvmuxerutil.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2A623E0F27E656B100469462 /* mkvmuxerutil.cc */; };
+		2A62419E27E656B600469462 /* mkvmuxer.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2A623E1027E656B100469462 /* mkvmuxer.cc */; };
+		2A6241C527E656B600469462 /* mkvreader.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2A623E6827E656B200469462 /* mkvreader.cc */; };
+		2A6241C627E656B600469462 /* mkvparser.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2A623E6927E656B200469462 /* mkvparser.cc */; };
+		2A6241C727E656B600469462 /* mkvreader.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A623E6A27E656B200469462 /* mkvreader.h */; };
+		2A6241C827E656B600469462 /* mkvparser.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A623E6B27E656B200469462 /* mkvparser.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		2A623DE427E6567800469462 /* libwebm.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libwebm.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A623E0A27E656B100469462 /* mkvmuxertypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkvmuxertypes.h; sourceTree = "<group>"; };
+		2A623E0B27E656B100469462 /* mkvmuxerutil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkvmuxerutil.h; sourceTree = "<group>"; };
+		2A623E0C27E656B100469462 /* mkvwriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkvwriter.h; sourceTree = "<group>"; };
+		2A623E0D27E656B100469462 /* mkvmuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkvmuxer.h; sourceTree = "<group>"; };
+		2A623E0E27E656B100469462 /* mkvwriter.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkvwriter.cc; sourceTree = "<group>"; };
+		2A623E0F27E656B100469462 /* mkvmuxerutil.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkvmuxerutil.cc; sourceTree = "<group>"; };
+		2A623E1027E656B100469462 /* mkvmuxer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkvmuxer.cc; sourceTree = "<group>"; };
+		2A623E6827E656B200469462 /* mkvreader.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkvreader.cc; sourceTree = "<group>"; };
+		2A623E6927E656B200469462 /* mkvparser.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkvparser.cc; sourceTree = "<group>"; };
+		2A623E6A27E656B200469462 /* mkvreader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkvreader.h; sourceTree = "<group>"; };
+		2A623E6B27E656B200469462 /* mkvparser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkvparser.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2A623DE227E6567800469462 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2A623DDB27E6567800469462 = {
+			isa = PBXGroup;
+			children = (
+				2A623DEF27E656B100469462 /* libwebm */,
+				2A623DE527E6567800469462 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2A623DE527E6567800469462 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2A623DE427E6567800469462 /* libwebm.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2A623DEF27E656B100469462 /* libwebm */ = {
+			isa = PBXGroup;
+			children = (
+				2A623E0927E656B100469462 /* mkvmuxer */,
+				2A623E6727E656B200469462 /* mkvparser */,
+			);
+			name = libwebm;
+			path = ../../../ext/libwebm;
+			sourceTree = "<group>";
+		};
+		2A623E0927E656B100469462 /* mkvmuxer */ = {
+			isa = PBXGroup;
+			children = (
+				2A623E0A27E656B100469462 /* mkvmuxertypes.h */,
+				2A623E0B27E656B100469462 /* mkvmuxerutil.h */,
+				2A623E0C27E656B100469462 /* mkvwriter.h */,
+				2A623E0D27E656B100469462 /* mkvmuxer.h */,
+				2A623E0E27E656B100469462 /* mkvwriter.cc */,
+				2A623E0F27E656B100469462 /* mkvmuxerutil.cc */,
+				2A623E1027E656B100469462 /* mkvmuxer.cc */,
+			);
+			path = mkvmuxer;
+			sourceTree = "<group>";
+		};
+		2A623E6727E656B200469462 /* mkvparser */ = {
+			isa = PBXGroup;
+			children = (
+				2A623E6827E656B200469462 /* mkvreader.cc */,
+				2A623E6927E656B200469462 /* mkvparser.cc */,
+				2A623E6A27E656B200469462 /* mkvreader.h */,
+				2A623E6B27E656B200469462 /* mkvparser.h */,
+			);
+			path = mkvparser;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		2A623DE027E6567800469462 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2A62419827E656B600469462 /* mkvmuxertypes.h in Headers */,
+				2A6241C827E656B600469462 /* mkvparser.h in Headers */,
+				2A6241C727E656B600469462 /* mkvreader.h in Headers */,
+				2A62419927E656B600469462 /* mkvmuxerutil.h in Headers */,
+				2A62419B27E656B600469462 /* mkvmuxer.h in Headers */,
+				2A62419A27E656B600469462 /* mkvwriter.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		2A623DE327E6567800469462 /* libwebm */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2A623DE827E6567800469462 /* Build configuration list for PBXNativeTarget "libwebm" */;
+			buildPhases = (
+				2A623DE027E6567800469462 /* Headers */,
+				2A623DE127E6567800469462 /* Sources */,
+				2A623DE227E6567800469462 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = libwebm;
+			productName = libwebm;
+			productReference = 2A623DE427E6567800469462 /* libwebm.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2A623DDC27E6567800469462 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1220;
+				TargetAttributes = {
+					2A623DE327E6567800469462 = {
+						CreatedOnToolsVersion = 12.2;
+					};
+				};
+			};
+			buildConfigurationList = 2A623DDF27E6567800469462 /* Build configuration list for PBXProject "libwebm" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 2A623DDB27E6567800469462;
+			productRefGroup = 2A623DE527E6567800469462 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2A623DE327E6567800469462 /* libwebm */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2A623DE127E6567800469462 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2A62419C27E656B600469462 /* mkvwriter.cc in Sources */,
+				2A62419E27E656B600469462 /* mkvmuxer.cc in Sources */,
+				2A62419D27E656B600469462 /* mkvmuxerutil.cc in Sources */,
+				2A6241C527E656B600469462 /* mkvreader.cc in Sources */,
+				2A6241C627E656B600469462 /* mkvparser.cc in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		2A623DE627E6567800469462 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../../ext/libwebm;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		2A623DE727E6567800469462 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../../ext/libwebm;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		2A623DE927E6567800469462 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = webm;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		2A623DEA27E6567800469462 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = webm;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2A623DDF27E6567800469462 /* Build configuration list for PBXProject "libwebm" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A623DE627E6567800469462 /* Debug */,
+				2A623DE727E6567800469462 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2A623DE827E6567800469462 /* Build configuration list for PBXNativeTarget "libwebm" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A623DE927E6567800469462 /* Debug */,
+				2A623DEA27E6567800469462 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2A623DDC27E6567800469462 /* Project object */;
+}
