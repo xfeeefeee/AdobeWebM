@@ -7,10 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2A6233C727E55B3C00469462 /* vpxenc.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A622EE527E55B3100469462 /* vpxenc.c */; };
-		2A6233C927E55B3C00469462 /* args.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A622EE727E55B3100469462 /* args.c */; };
-		2A6233CA27E55B3C00469462 /* y4minput.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A622EE927E55B3100469462 /* y4minput.h */; };
-		2A62344127E55B3C00469462 /* md5_utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A622F9C27E55B3300469462 /* md5_utils.h */; };
 		2A62344427E55B3C00469462 /* vp9_cx_iface.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A622FA227E55B3300469462 /* vp9_cx_iface.h */; };
 		2A62344627E55B3C00469462 /* vp9_encodeframe.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A622FA627E55B3300469462 /* vp9_encodeframe.h */; };
 		2A62344727E55B3C00469462 /* vp9_rd.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A622FA727E55B3300469462 /* vp9_rd.c */; };
@@ -471,10 +467,6 @@
 		2A62370327E55B3E00469462 /* vpx_filter.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A6232AD27E55B3900469462 /* vpx_filter.h */; };
 		2A62370427E55B3E00469462 /* postproc.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A6232AE27E55B3900469462 /* postproc.h */; };
 		2A62370527E55B3E00469462 /* variance.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A6232AF27E55B3900469462 /* variance.h */; };
-		2A62370627E55B3E00469462 /* tools_common.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A6232B027E55B3900469462 /* tools_common.h */; };
-		2A62370727E55B3E00469462 /* vpxdec.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A6232B227E55B3900469462 /* vpxdec.c */; };
-		2A62370A27E55B3E00469462 /* y4minput.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A6232B727E55B3900469462 /* y4minput.c */; };
-		2A62370B27E55B3E00469462 /* args.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A6232B827E55B3900469462 /* args.h */; };
 		2A62370D27E55B3E00469462 /* vpx_once.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A6232BC27E55B3900469462 /* vpx_once.h */; };
 		2A62370F27E55B3E00469462 /* bitops.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A6232BE27E55B3900469462 /* bitops.h */; };
 		2A62371027E55B3E00469462 /* mem_ops_aligned.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A6232BF27E55B3900469462 /* mem_ops_aligned.h */; };
@@ -550,8 +542,6 @@
 		2A62379227E55B3E00469462 /* row_gcc.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2A62336227E55B3B00469462 /* row_gcc.cc */; };
 		2A62379327E55B3E00469462 /* rotate_argb.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2A62336327E55B3B00469462 /* rotate_argb.cc */; };
 		2A62379627E55B3E00469462 /* scale_argb.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2A62336627E55B3B00469462 /* scale_argb.cc */; };
-		2A62379727E55B3E00469462 /* vpxenc.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A62336827E55B3B00469462 /* vpxenc.h */; };
-		2A6237AC27E55B3E00469462 /* md5_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A62337F27E55B3B00469462 /* md5_utils.c */; };
 		2A6237B027E55B3E00469462 /* vpx_thread.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A62338727E55B3B00469462 /* vpx_thread.c */; };
 		2A6237B127E55B3E00469462 /* vpx_atomics.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A62338827E55B3B00469462 /* vpx_atomics.h */; };
 		2A6237B227E55B3E00469462 /* vpx_timestamp.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A62338A27E55B3B00469462 /* vpx_timestamp.h */; };
@@ -578,7 +568,6 @@
 		2A6237C727E55B3E00469462 /* vpx_image.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A6233A627E55B3B00469462 /* vpx_image.c */; };
 		2A6237C827E55B3E00469462 /* vpx_encoder.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A6233A727E55B3B00469462 /* vpx_encoder.c */; };
 		2A6237C927E55B3E00469462 /* vpx_codec.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A6233A827E55B3B00469462 /* vpx_codec.c */; };
-		2A6237CD27E55B3E00469462 /* tools_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A6233C127E55B3C00469462 /* tools_common.c */; };
 		2A62380427E5C02F00469462 /* alloccommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A62313327E55B3600469462 /* alloccommon.h */; };
 		2A62380527E5C02F00469462 /* vp9_partition_models.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A622FB427E55B3300469462 /* vp9_partition_models.h */; };
 		2A62380627E5C02F00469462 /* header.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A62310327E55B3600469462 /* header.h */; };
@@ -684,7 +673,6 @@
 		2A62387727E5C02F00469462 /* vp9_entropymode.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A62307227E55B3400469462 /* vp9_entropymode.h */; };
 		2A62387827E5C02F00469462 /* vp9_denoiser.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A622FB027E55B3300469462 /* vp9_denoiser.h */; };
 		2A62387927E5C02F00469462 /* entropymv.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A62317127E55B3700469462 /* entropymv.h */; };
-		2A62387A27E5C02F00469462 /* y4minput.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A622EE927E55B3100469462 /* y4minput.h */; };
 		2A62387B27E5C02F00469462 /* vp9_mv.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A62303B27E55B3400469462 /* vp9_mv.h */; };
 		2A62387D27E5C02F00469462 /* modecont.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A62310927E55B3600469462 /* modecont.h */; };
 		2A62387E27E5C02F00469462 /* default_coef_probs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A62310527E55B3600469462 /* default_coef_probs.h */; };
@@ -706,7 +694,6 @@
 		2A62389027E5C02F00469462 /* vp9_job_queue.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A62302427E55B3400469462 /* vp9_job_queue.h */; };
 		2A62389127E5C02F00469462 /* planar_functions.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A62332E27E55B3A00469462 /* planar_functions.h */; };
 		2A62389227E5C02F00469462 /* cpu_id.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A62332A27E55B3A00469462 /* cpu_id.h */; };
-		2A62389327E5C02F00469462 /* md5_utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A622F9C27E55B3300469462 /* md5_utils.h */; };
 		2A62389527E5C02F00469462 /* vpx_once.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A6232BC27E55B3900469462 /* vpx_once.h */; };
 		2A62389627E5C02F00469462 /* version.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A62332927E55B3A00469462 /* version.h */; };
 		2A62389727E5C02F00469462 /* vp9_cx_iface.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A622FA227E55B3300469462 /* vp9_cx_iface.h */; };
@@ -746,9 +733,7 @@
 		2A6238BA27E5C02F00469462 /* vp9_reconinter.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A62307427E55B3500469462 /* vp9_reconinter.h */; };
 		2A6238BB27E5C02F00469462 /* rotate_row.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A62332D27E55B3A00469462 /* rotate_row.h */; };
 		2A6238BC27E5C02F00469462 /* vp9_ethread.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A622FFD27E55B3400469462 /* vp9_ethread.h */; };
-		2A6238BD27E5C02F00469462 /* vpxenc.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A62336827E55B3B00469462 /* vpxenc.h */; };
 		2A6238BE27E5C02F00469462 /* ratectrl.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A6230A827E55B3500469462 /* ratectrl.h */; };
-		2A6238C027E5C02F00469462 /* args.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A6232B827E55B3900469462 /* args.h */; };
 		2A6238C127E5C02F00469462 /* vp9_postproc.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A62305127E55B3400469462 /* vp9_postproc.h */; };
 		2A6238C227E5C02F00469462 /* vpx_filter.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A6232AD27E55B3900469462 /* vpx_filter.h */; };
 		2A6238C327E5C02F00469462 /* vp9_ext_ratectrl.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A62300D27E55B3400469462 /* vp9_ext_ratectrl.h */; };
@@ -757,7 +742,6 @@
 		2A6238C627E5C02F00469462 /* dct_value_cost.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A6230AC27E55B3500469462 /* dct_value_cost.h */; };
 		2A6238C727E5C02F00469462 /* vp9_thread_common.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A62304227E55B3400469462 /* vp9_thread_common.h */; };
 		2A6238C827E5C02F00469462 /* loongson_intrinsics.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A62339027E55B3B00469462 /* loongson_intrinsics.h */; };
-		2A6238C927E5C02F00469462 /* tools_common.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A6232B027E55B3900469462 /* tools_common.h */; };
 		2A6238CA27E5C02F00469462 /* vp9_reconintra.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A62304127E55B3400469462 /* vp9_reconintra.h */; };
 		2A6238CC27E5C02F00469462 /* ethreading.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A6230CF27E55B3500469462 /* ethreading.h */; };
 		2A6238CD27E5C02F00469462 /* rdopt.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A6230D227E55B3500469462 /* rdopt.h */; };
@@ -846,7 +830,6 @@
 		2A62393427E5C02F00469462 /* convert_to_argb.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2A62335527E55B3B00469462 /* convert_to_argb.cc */; };
 		2A62393627E5C02F00469462 /* fastssim.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A6231A627E55B3700469462 /* fastssim.c */; };
 		2A62393727E5C02F00469462 /* vp9_encodemb.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A622FBC27E55B3300469462 /* vp9_encodemb.c */; };
-		2A62393827E5C02F00469462 /* md5_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A62337F27E55B3B00469462 /* md5_utils.c */; };
 		2A62393927E5C02F00469462 /* encodemv.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A6230BA27E55B3500469462 /* encodemv.c */; };
 		2A62393A27E5C02F00469462 /* scale_win.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2A62335B27E55B3B00469462 /* scale_win.cc */; };
 		2A62393B27E5C02F00469462 /* convert_from_argb.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2A62334927E55B3A00469462 /* convert_from_argb.cc */; };
@@ -873,7 +856,6 @@
 		2A62396127E5C02F00469462 /* scale_neon.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2A62335E27E55B3B00469462 /* scale_neon.cc */; };
 		2A62396227E5C02F00469462 /* sad.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A6232A727E55B3900469462 /* sad.c */; };
 		2A62396327E5C02F00469462 /* vp9_dx_iface.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A62307C27E55B3500469462 /* vp9_dx_iface.c */; };
-		2A62396427E5C02F00469462 /* vpxenc.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A622EE527E55B3100469462 /* vpxenc.c */; };
 		2A62396827E5C02F00469462 /* debugmodes.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A62310027E55B3600469462 /* debugmodes.c */; };
 		2A62396927E5C02F00469462 /* vp9_pred_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A62305527E55B3400469462 /* vp9_pred_common.c */; };
 		2A62396A27E5C02F00469462 /* ratectrl.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A6230D427E55B3500469462 /* ratectrl.c */; };
@@ -906,7 +888,6 @@
 		2A62399927E5C02F00469462 /* dct.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A6230BF27E55B3500469462 /* dct.c */; };
 		2A62399A27E5C02F00469462 /* vpx_encoder.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A6233A727E55B3B00469462 /* vpx_encoder.c */; };
 		2A62399D27E5C02F00469462 /* vp9_tokenize.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A622FF527E55B3400469462 /* vp9_tokenize.c */; };
-		2A62399E27E5C02F00469462 /* tools_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A6233C127E55B3C00469462 /* tools_common.c */; };
 		2A62399F27E5C02F00469462 /* vp9_decoder.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A62302727E55B3400469462 /* vp9_decoder.c */; };
 		2A6239A027E5C02F00469462 /* entropy.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A62316F27E55B3700469462 /* entropy.c */; };
 		2A6239A327E5C02F00469462 /* vp9_pickmode.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A622FC027E55B3300469462 /* vp9_pickmode.c */; };
@@ -960,7 +941,6 @@
 		2A6239E527E5C02F00469462 /* bitwriter.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A6232A827E55B3900469462 /* bitwriter.c */; };
 		2A6239E627E5C02F00469462 /* vp9_rtcd.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A62307827E55B3500469462 /* vp9_rtcd.c */; };
 		2A6239E727E5C02F00469462 /* vp9_entropymv.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A62307527E55B3500469462 /* vp9_entropymv.c */; };
-		2A6239E827E5C02F00469462 /* vpxdec.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A6232B227E55B3900469462 /* vpxdec.c */; };
 		2A6239E927E5C02F00469462 /* vp9_picklpf.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A62300C27E55B3400469462 /* vp9_picklpf.c */; };
 		2A6239EA27E5C02F00469462 /* ethreading.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A62309C27E55B3500469462 /* ethreading.c */; };
 		2A6239EB27E5C02F00469462 /* onyxd_if.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A6230E927E55B3500469462 /* onyxd_if.c */; };
@@ -969,10 +949,8 @@
 		2A6239EE27E5C02F00469462 /* rotate_argb.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2A62336327E55B3B00469462 /* rotate_argb.cc */; };
 		2A6239F127E5C02F00469462 /* vp9_blockiness.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A62300627E55B3400469462 /* vp9_blockiness.c */; };
 		2A6239F227E5C02F00469462 /* detokenize.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A6230F027E55B3600469462 /* detokenize.c */; };
-		2A6239F327E5C02F00469462 /* args.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A622EE727E55B3100469462 /* args.c */; };
 		2A6239F627E5C02F00469462 /* postproc.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A62311227E55B3600469462 /* postproc.c */; };
 		2A6239F827E5C02F00469462 /* convert_argb.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2A62334D27E55B3A00469462 /* convert_argb.cc */; };
-		2A6239F927E5C02F00469462 /* y4minput.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A6232B727E55B3900469462 /* y4minput.c */; };
 		2A6239FB27E5C02F00469462 /* encodemb.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A62309F27E55B3500469462 /* encodemb.c */; };
 		2A6239FC27E5C02F00469462 /* alloccommon.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A6230F927E55B3600469462 /* alloccommon.c */; };
 		2A6239FE27E5C02F00469462 /* systemdependent.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A62315327E55B3600469462 /* systemdependent.c */; };
@@ -1129,10 +1107,6 @@
 
 /* Begin PBXFileReference section */
 		2A622ED727E5595C00469462 /* libvpx_x86_64.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libvpx_x86_64.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		2A622EE527E55B3100469462 /* vpxenc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vpxenc.c; sourceTree = "<group>"; };
-		2A622EE727E55B3100469462 /* args.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = args.c; sourceTree = "<group>"; };
-		2A622EE927E55B3100469462 /* y4minput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = y4minput.h; sourceTree = "<group>"; };
-		2A622F9C27E55B3300469462 /* md5_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = md5_utils.h; sourceTree = "<group>"; };
 		2A622FA227E55B3300469462 /* vp9_cx_iface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vp9_cx_iface.h; sourceTree = "<group>"; };
 		2A622FA627E55B3300469462 /* vp9_encodeframe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vp9_encodeframe.h; sourceTree = "<group>"; };
 		2A622FA727E55B3300469462 /* vp9_rd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vp9_rd.c; sourceTree = "<group>"; };
@@ -1701,10 +1675,6 @@
 		2A6232AD27E55B3900469462 /* vpx_filter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vpx_filter.h; sourceTree = "<group>"; };
 		2A6232AE27E55B3900469462 /* postproc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = postproc.h; sourceTree = "<group>"; };
 		2A6232AF27E55B3900469462 /* variance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = variance.h; sourceTree = "<group>"; };
-		2A6232B027E55B3900469462 /* tools_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tools_common.h; sourceTree = "<group>"; };
-		2A6232B227E55B3900469462 /* vpxdec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vpxdec.c; sourceTree = "<group>"; };
-		2A6232B727E55B3900469462 /* y4minput.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = y4minput.c; sourceTree = "<group>"; };
-		2A6232B827E55B3900469462 /* args.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = args.h; sourceTree = "<group>"; };
 		2A6232BC27E55B3900469462 /* vpx_once.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vpx_once.h; sourceTree = "<group>"; };
 		2A6232BE27E55B3900469462 /* bitops.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitops.h; sourceTree = "<group>"; };
 		2A6232BF27E55B3900469462 /* mem_ops_aligned.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mem_ops_aligned.h; sourceTree = "<group>"; };
@@ -1787,8 +1757,6 @@
 		2A62336427E55B3B00469462 /* compare_gcc.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = compare_gcc.cc; sourceTree = "<group>"; };
 		2A62336527E55B3B00469462 /* compare_neon64.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = compare_neon64.cc; sourceTree = "<group>"; };
 		2A62336627E55B3B00469462 /* scale_argb.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = scale_argb.cc; sourceTree = "<group>"; };
-		2A62336827E55B3B00469462 /* vpxenc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vpxenc.h; sourceTree = "<group>"; };
-		2A62337F27E55B3B00469462 /* md5_utils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = md5_utils.c; sourceTree = "<group>"; };
 		2A62338727E55B3B00469462 /* vpx_thread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vpx_thread.c; sourceTree = "<group>"; };
 		2A62338827E55B3B00469462 /* vpx_atomics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vpx_atomics.h; sourceTree = "<group>"; };
 		2A62338A27E55B3B00469462 /* vpx_timestamp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vpx_timestamp.h; sourceTree = "<group>"; };
@@ -1815,7 +1783,6 @@
 		2A6233A627E55B3B00469462 /* vpx_image.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vpx_image.c; sourceTree = "<group>"; };
 		2A6233A727E55B3B00469462 /* vpx_encoder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vpx_encoder.c; sourceTree = "<group>"; };
 		2A6233A827E55B3B00469462 /* vpx_codec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vpx_codec.c; sourceTree = "<group>"; };
-		2A6233C127E55B3C00469462 /* tools_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tools_common.c; sourceTree = "<group>"; };
 		2A623A4627E5C02F00469462 /* libvpx_arm64.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libvpx_arm64.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -1857,13 +1824,7 @@
 		2A622EE127E55B3100469462 /* libvpx */ = {
 			isa = PBXGroup;
 			children = (
-				2A622EE727E55B3100469462 /* args.c */,
-				2A6232B827E55B3900469462 /* args.h */,
-				2A62337F27E55B3B00469462 /* md5_utils.c */,
-				2A622F9C27E55B3300469462 /* md5_utils.h */,
 				2A6232D627E55B3A00469462 /* third_party */,
-				2A6233C127E55B3C00469462 /* tools_common.c */,
-				2A6232B027E55B3900469462 /* tools_common.h */,
 				2A62308B27E55B3500469462 /* vp8 */,
 				2A622F9F27E55B3300469462 /* vp9 */,
 				2A62339227E55B3B00469462 /* vpx */,
@@ -1872,11 +1833,6 @@
 				2A6232BB27E55B3900469462 /* vpx_ports */,
 				2A62317427E55B3700469462 /* vpx_scale */,
 				2A62338627E55B3B00469462 /* vpx_util */,
-				2A622EE527E55B3100469462 /* vpxenc.c */,
-				2A622EE927E55B3100469462 /* y4minput.h */,
-				2A6232B227E55B3900469462 /* vpxdec.c */,
-				2A6232B727E55B3900469462 /* y4minput.c */,
-				2A62336827E55B3B00469462 /* vpxenc.h */,
 			);
 			name = libvpx;
 			path = ../../../ext/libvpx;
@@ -3002,7 +2958,6 @@
 				2A6234FF27E55B3D00469462 /* vp9_entropymode.h in Headers */,
 				2A62345027E55B3C00469462 /* vp9_denoiser.h in Headers */,
 				2A6235D927E55B3D00469462 /* entropymv.h in Headers */,
-				2A6233CA27E55B3C00469462 /* y4minput.h in Headers */,
 				2A6234D027E55B3C00469462 /* vp9_mv.h in Headers */,
 				2A6236A927E55B3D00469462 /* bitdepth_conversion_avx2.h in Headers */,
 				2A62357B27E55B3D00469462 /* modecont.h in Headers */,
@@ -3027,7 +2982,6 @@
 				2A6234BB27E55B3C00469462 /* vp9_job_queue.h in Headers */,
 				2A62375F27E55B3E00469462 /* planar_functions.h in Headers */,
 				2A62375B27E55B3E00469462 /* cpu_id.h in Headers */,
-				2A62344127E55B3C00469462 /* md5_utils.h in Headers */,
 				2A62367427E55B3D00469462 /* inv_txfm_sse2.h in Headers */,
 				2A62370D27E55B3E00469462 /* vpx_once.h in Headers */,
 				2A62375A27E55B3E00469462 /* version.h in Headers */,
@@ -3069,10 +3023,8 @@
 				2A62350127E55B3D00469462 /* vp9_reconinter.h in Headers */,
 				2A62375E27E55B3E00469462 /* rotate_row.h in Headers */,
 				2A62349927E55B3C00469462 /* vp9_ethread.h in Headers */,
-				2A62379727E55B3E00469462 /* vpxenc.h in Headers */,
 				2A62352327E55B3D00469462 /* ratectrl.h in Headers */,
 				2A62366A27E55B3D00469462 /* quantize_ssse3.h in Headers */,
-				2A62370B27E55B3E00469462 /* args.h in Headers */,
 				2A6234E227E55B3D00469462 /* vp9_postproc.h in Headers */,
 				2A62370327E55B3E00469462 /* vpx_filter.h in Headers */,
 				2A6234A727E55B3C00469462 /* vp9_ext_ratectrl.h in Headers */,
@@ -3081,7 +3033,6 @@
 				2A62352727E55B3D00469462 /* dct_value_cost.h in Headers */,
 				2A6234D627E55B3C00469462 /* vp9_thread_common.h in Headers */,
 				2A6237B827E55B3E00469462 /* loongson_intrinsics.h in Headers */,
-				2A62370627E55B3E00469462 /* tools_common.h in Headers */,
 				2A6234D527E55B3C00469462 /* vp9_reconintra.h in Headers */,
 				2A62367827E55B3D00469462 /* transpose_sse2.h in Headers */,
 				2A62354627E55B3D00469462 /* ethreading.h in Headers */,
@@ -3246,7 +3197,6 @@
 				2A62387827E5C02F00469462 /* vp9_denoiser.h in Headers */,
 				2A623A9727E5C44E00469462 /* vpx_convolve8_neon.h in Headers */,
 				2A62387927E5C02F00469462 /* entropymv.h in Headers */,
-				2A62387A27E5C02F00469462 /* y4minput.h in Headers */,
 				2A62387B27E5C02F00469462 /* vp9_mv.h in Headers */,
 				2A62387D27E5C02F00469462 /* modecont.h in Headers */,
 				2A62387E27E5C02F00469462 /* default_coef_probs.h in Headers */,
@@ -3268,7 +3218,6 @@
 				2A62389027E5C02F00469462 /* vp9_job_queue.h in Headers */,
 				2A62389127E5C02F00469462 /* planar_functions.h in Headers */,
 				2A62389227E5C02F00469462 /* cpu_id.h in Headers */,
-				2A62389327E5C02F00469462 /* md5_utils.h in Headers */,
 				2A62389527E5C02F00469462 /* vpx_once.h in Headers */,
 				2A62389627E5C02F00469462 /* version.h in Headers */,
 				2A62389727E5C02F00469462 /* vp9_cx_iface.h in Headers */,
@@ -3308,9 +3257,7 @@
 				2A6238BA27E5C02F00469462 /* vp9_reconinter.h in Headers */,
 				2A6238BB27E5C02F00469462 /* rotate_row.h in Headers */,
 				2A6238BC27E5C02F00469462 /* vp9_ethread.h in Headers */,
-				2A6238BD27E5C02F00469462 /* vpxenc.h in Headers */,
 				2A6238BE27E5C02F00469462 /* ratectrl.h in Headers */,
-				2A6238C027E5C02F00469462 /* args.h in Headers */,
 				2A6238C127E5C02F00469462 /* vp9_postproc.h in Headers */,
 				2A6238C227E5C02F00469462 /* vpx_filter.h in Headers */,
 				2A6238C327E5C02F00469462 /* vp9_ext_ratectrl.h in Headers */,
@@ -3319,7 +3266,6 @@
 				2A6238C627E5C02F00469462 /* dct_value_cost.h in Headers */,
 				2A6238C727E5C02F00469462 /* vp9_thread_common.h in Headers */,
 				2A6238C827E5C02F00469462 /* loongson_intrinsics.h in Headers */,
-				2A6238C927E5C02F00469462 /* tools_common.h in Headers */,
 				2A6238CA27E5C02F00469462 /* vp9_reconintra.h in Headers */,
 				2A6238CC27E5C02F00469462 /* ethreading.h in Headers */,
 				2A6238CD27E5C02F00469462 /* rdopt.h in Headers */,
@@ -3510,7 +3456,6 @@
 				2A6236AC27E55B3D00469462 /* deblock_sse2.asm in Sources */,
 				2A62360127E55B3D00469462 /* fastssim.c in Sources */,
 				2A62345C27E55B3C00469462 /* vp9_encodemb.c in Sources */,
-				2A6237AC27E55B3E00469462 /* md5_utils.c in Sources */,
 				2A62353227E55B3D00469462 /* encodemv.c in Sources */,
 				2A62378B27E55B3E00469462 /* scale_win.cc in Sources */,
 				2A62377927E55B3E00469462 /* convert_from_argb.cc in Sources */,
@@ -3554,7 +3499,6 @@
 				2A62378E27E55B3E00469462 /* scale_neon.cc in Sources */,
 				2A6236FD27E55B3D00469462 /* sad.c in Sources */,
 				2A62350927E55B3D00469462 /* vp9_dx_iface.c in Sources */,
-				2A6233C727E55B3C00469462 /* vpxenc.c in Sources */,
 				2A62348A27E55B3C00469462 /* vp9_error_sse2.asm in Sources */,
 				2A6236A627E55B3D00469462 /* fwd_txfm_sse2.c in Sources */,
 				2A62354027E55B3D00469462 /* block_error_sse2.asm in Sources */,
@@ -3612,7 +3556,6 @@
 				2A62367E27E55B3D00469462 /* vpx_subpixel_4t_intrin_sse2.c in Sources */,
 				2A6236A727E55B3D00469462 /* subpel_variance_sse2.asm in Sources */,
 				2A62349127E55B3C00469462 /* vp9_tokenize.c in Sources */,
-				2A6237CD27E55B3E00469462 /* tools_common.c in Sources */,
 				2A6234BE27E55B3C00469462 /* vp9_decoder.c in Sources */,
 				2A6235D727E55B3D00469462 /* entropy.c in Sources */,
 				2A62366F27E55B3D00469462 /* highbd_intrapred_intrin_sse2.c in Sources */,
@@ -3686,7 +3629,6 @@
 				2A6236FE27E55B3D00469462 /* bitwriter.c in Sources */,
 				2A62350527E55B3D00469462 /* vp9_rtcd.c in Sources */,
 				2A62350227E55B3D00469462 /* vp9_entropymv.c in Sources */,
-				2A62370727E55B3E00469462 /* vpxdec.c in Sources */,
 				2A6234A627E55B3C00469462 /* vp9_picklpf.c in Sources */,
 				2A62351727E55B3D00469462 /* ethreading.c in Sources */,
 				2A62355C27E55B3D00469462 /* onyxd_if.c in Sources */,
@@ -3697,13 +3639,11 @@
 				2A62369227E55B3D00469462 /* avg_pred_sse2.c in Sources */,
 				2A6234A027E55B3C00469462 /* vp9_blockiness.c in Sources */,
 				2A62356327E55B3D00469462 /* detokenize.c in Sources */,
-				2A6233C927E55B3C00469462 /* args.c in Sources */,
 				2A62353E27E55B3D00469462 /* copy_sse3.asm in Sources */,
 				2A6235AF27E55B3D00469462 /* loopfilter_x86.c in Sources */,
 				2A62358327E55B3D00469462 /* postproc.c in Sources */,
 				2A62348727E55B3C00469462 /* vp9_highbd_block_error_intrin_sse2.c in Sources */,
 				2A62377D27E55B3E00469462 /* convert_argb.cc in Sources */,
-				2A62370A27E55B3E00469462 /* y4minput.c in Sources */,
 				2A62353D27E55B3D00469462 /* copy_sse2.asm in Sources */,
 				2A62351A27E55B3D00469462 /* encodemb.c in Sources */,
 				2A62356B27E55B3D00469462 /* alloccommon.c in Sources */,
@@ -3833,7 +3773,6 @@
 				2A62393427E5C02F00469462 /* convert_to_argb.cc in Sources */,
 				2A62393627E5C02F00469462 /* fastssim.c in Sources */,
 				2A62393727E5C02F00469462 /* vp9_encodemb.c in Sources */,
-				2A62393827E5C02F00469462 /* md5_utils.c in Sources */,
 				2A62393927E5C02F00469462 /* encodemv.c in Sources */,
 				2A623ABD27E5C5B500469462 /* vp9_iht16x16_add_neon.c in Sources */,
 				2A62393A27E5C02F00469462 /* scale_win.cc in Sources */,
@@ -3873,7 +3812,6 @@
 				2A62396227E5C02F00469462 /* sad.c in Sources */,
 				2A623ACB27E5C5E500469462 /* idct_blk_neon.c in Sources */,
 				2A62396327E5C02F00469462 /* vp9_dx_iface.c in Sources */,
-				2A62396427E5C02F00469462 /* vpxenc.c in Sources */,
 				2A62396827E5C02F00469462 /* debugmodes.c in Sources */,
 				2A62396927E5C02F00469462 /* vp9_pred_common.c in Sources */,
 				2A62396A27E5C02F00469462 /* ratectrl.c in Sources */,
@@ -3919,7 +3857,6 @@
 				2A62399927E5C02F00469462 /* dct.c in Sources */,
 				2A62399A27E5C02F00469462 /* vpx_encoder.c in Sources */,
 				2A62399D27E5C02F00469462 /* vp9_tokenize.c in Sources */,
-				2A62399E27E5C02F00469462 /* tools_common.c in Sources */,
 				2A62399F27E5C02F00469462 /* vp9_decoder.c in Sources */,
 				2A6239A027E5C02F00469462 /* entropy.c in Sources */,
 				2A623AC227E5C5C800469462 /* denoising_neon.c in Sources */,
@@ -3993,7 +3930,6 @@
 				2A623ABB27E5C5B500469462 /* vp9_highbd_iht8x8_add_neon.c in Sources */,
 				2A6239E627E5C02F00469462 /* vp9_rtcd.c in Sources */,
 				2A6239E727E5C02F00469462 /* vp9_entropymv.c in Sources */,
-				2A6239E827E5C02F00469462 /* vpxdec.c in Sources */,
 				2A623AA527E5C44E00469462 /* idct32x32_34_add_neon.c in Sources */,
 				2A6239E927E5C02F00469462 /* vp9_picklpf.c in Sources */,
 				2A6239EA27E5C02F00469462 /* ethreading.c in Sources */,
@@ -4008,11 +3944,9 @@
 				2A6247AD27E999BF00469462 /* arm_cpudetect.c in Sources */,
 				2A6239F127E5C02F00469462 /* vp9_blockiness.c in Sources */,
 				2A6239F227E5C02F00469462 /* detokenize.c in Sources */,
-				2A6239F327E5C02F00469462 /* args.c in Sources */,
 				2A6239F627E5C02F00469462 /* postproc.c in Sources */,
 				2A623AA427E5C44E00469462 /* highbd_idct32x32_1024_add_neon.c in Sources */,
 				2A6239F827E5C02F00469462 /* convert_argb.cc in Sources */,
-				2A6239F927E5C02F00469462 /* y4minput.c in Sources */,
 				2A6239FB27E5C02F00469462 /* encodemb.c in Sources */,
 				2A6239FC27E5C02F00469462 /* alloccommon.c in Sources */,
 				2A623A6F27E5C44E00469462 /* idct16x16_add_neon.c in Sources */,
