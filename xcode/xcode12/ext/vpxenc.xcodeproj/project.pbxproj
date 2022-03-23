@@ -1,0 +1,529 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2A624CCA27EA9CA500469462 /* vpxenc.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A6247EB27EA9CA300469462 /* vpxenc.c */; };
+		2A624F9B27EAA05C00469462 /* warnings.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A624F9A27EAA05C00469462 /* warnings.c */; };
+		2A624F9F27EAA07F00469462 /* rate_hist.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A624F9D27EAA07F00469462 /* rate_hist.c */; };
+		2A624FA327EAA0AF00469462 /* ivfenc.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A624FA227EAA0AF00469462 /* ivfenc.c */; };
+		2A624FA727EAA0C900469462 /* vpxstats.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A624FA527EAA0C900469462 /* vpxstats.c */; };
+		2A624FAB27EAA0F800469462 /* webmenc.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2A624FAA27EAA0F800469462 /* webmenc.cc */; };
+		2A62503E27EAA16D00469462 /* mkvwriter.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2A624FB627EAA16C00469462 /* mkvwriter.cc */; };
+		2A62503F27EAA16D00469462 /* mkvmuxerutil.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2A624FB727EAA16C00469462 /* mkvmuxerutil.cc */; };
+		2A62504027EAA16D00469462 /* mkvmuxer.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2A624FB827EAA16C00469462 /* mkvmuxer.cc */; };
+		2A62504127EAA16D00469462 /* hdr_util.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2A624FBA27EAA16C00469462 /* hdr_util.cc */; };
+		2A62504227EAA16D00469462 /* file_util.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2A624FBE27EAA16C00469462 /* file_util.cc */; };
+		2A62504327EAA16D00469462 /* mkvreader.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2A624FC027EAA16C00469462 /* mkvreader.cc */; };
+		2A62504427EAA16D00469462 /* mkvparser.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2A624FC127EAA16C00469462 /* mkvparser.cc */; };
+		2A62515827EB012900469462 /* libvpx_arm64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A624F8C27EA9FE700469462 /* libvpx_arm64.a */; };
+		2A62515927EB012900469462 /* libvpx_x86_64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A624F8A27EA9FE700469462 /* libvpx_x86_64.a */; };
+		2A62516F27EB025100469462 /* tools_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A62516D27EB025100469462 /* tools_common.c */; };
+		2A62517827EB028400469462 /* args.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A62517627EB028400469462 /* args.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		2A624F8927EA9FE700469462 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A624F8427EA9FE700469462 /* libvpx.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2A622ED727E5595C00469462;
+			remoteInfo = libvpx_x86_64;
+		};
+		2A624F8B27EA9FE700469462 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A624F8427EA9FE700469462 /* libvpx.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2A623A4627E5C02F00469462;
+			remoteInfo = libvpx_arm64;
+		};
+		2A624F9127EA9FFA00469462 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A624F8427EA9FE700469462 /* libvpx.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 2A62380227E5C02F00469462;
+			remoteInfo = libvpx_arm64;
+		};
+		2A624F9327EA9FFA00469462 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A624F8427EA9FE700469462 /* libvpx.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 2A622ED627E5595C00469462;
+			remoteInfo = libvpx_x86_64;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		2A6247D827EA9C7C00469462 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		2A6247DA27EA9C7C00469462 /* vpxenc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = vpxenc; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A6247EB27EA9CA300469462 /* vpxenc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vpxenc.c; sourceTree = "<group>"; };
+		2A624F8427EA9FE700469462 /* libvpx.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = libvpx.xcodeproj; sourceTree = "<group>"; };
+		2A624F9927EAA05C00469462 /* warnings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = warnings.h; sourceTree = "<group>"; };
+		2A624F9A27EAA05C00469462 /* warnings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = warnings.c; sourceTree = "<group>"; };
+		2A624F9D27EAA07F00469462 /* rate_hist.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rate_hist.c; sourceTree = "<group>"; };
+		2A624F9E27EAA07F00469462 /* rate_hist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rate_hist.h; sourceTree = "<group>"; };
+		2A624FA127EAA0AF00469462 /* ivfenc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ivfenc.h; sourceTree = "<group>"; };
+		2A624FA227EAA0AF00469462 /* ivfenc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ivfenc.c; sourceTree = "<group>"; };
+		2A624FA527EAA0C900469462 /* vpxstats.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vpxstats.c; sourceTree = "<group>"; };
+		2A624FA627EAA0C900469462 /* vpxstats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vpxstats.h; sourceTree = "<group>"; };
+		2A624FA927EAA0F800469462 /* webmenc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = webmenc.h; sourceTree = "<group>"; };
+		2A624FAA27EAA0F800469462 /* webmenc.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = webmenc.cc; sourceTree = "<group>"; };
+		2A624FB227EAA16C00469462 /* mkvmuxertypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkvmuxertypes.h; sourceTree = "<group>"; };
+		2A624FB327EAA16C00469462 /* mkvmuxerutil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkvmuxerutil.h; sourceTree = "<group>"; };
+		2A624FB427EAA16C00469462 /* mkvwriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkvwriter.h; sourceTree = "<group>"; };
+		2A624FB527EAA16C00469462 /* mkvmuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkvmuxer.h; sourceTree = "<group>"; };
+		2A624FB627EAA16C00469462 /* mkvwriter.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkvwriter.cc; sourceTree = "<group>"; };
+		2A624FB727EAA16C00469462 /* mkvmuxerutil.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkvmuxerutil.cc; sourceTree = "<group>"; };
+		2A624FB827EAA16C00469462 /* mkvmuxer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkvmuxer.cc; sourceTree = "<group>"; };
+		2A624FBA27EAA16C00469462 /* hdr_util.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hdr_util.cc; sourceTree = "<group>"; };
+		2A624FBB27EAA16C00469462 /* hdr_util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdr_util.h; sourceTree = "<group>"; };
+		2A624FBC27EAA16C00469462 /* file_util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = file_util.h; sourceTree = "<group>"; };
+		2A624FBD27EAA16C00469462 /* webmids.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = webmids.h; sourceTree = "<group>"; };
+		2A624FBE27EAA16C00469462 /* file_util.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = file_util.cc; sourceTree = "<group>"; };
+		2A624FC027EAA16C00469462 /* mkvreader.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkvreader.cc; sourceTree = "<group>"; };
+		2A624FC127EAA16C00469462 /* mkvparser.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkvparser.cc; sourceTree = "<group>"; };
+		2A624FC227EAA16C00469462 /* mkvreader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkvreader.h; sourceTree = "<group>"; };
+		2A624FC327EAA16C00469462 /* mkvparser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkvparser.h; sourceTree = "<group>"; };
+		2A62514827EAFF6000469462 /* libvpx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvpx.a; path = ../../../../../Desktop/libvpx/libvpx.a; sourceTree = "<group>"; };
+		2A62516D27EB025100469462 /* tools_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tools_common.c; sourceTree = "<group>"; };
+		2A62516E27EB025100469462 /* tools_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tools_common.h; sourceTree = "<group>"; };
+		2A62517627EB028400469462 /* args.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = args.c; sourceTree = "<group>"; };
+		2A62517727EB028400469462 /* args.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = args.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2A6247D727EA9C7C00469462 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2A62515827EB012900469462 /* libvpx_arm64.a in Frameworks */,
+				2A62515927EB012900469462 /* libvpx_x86_64.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2A6247D127EA9C7C00469462 = {
+			isa = PBXGroup;
+			children = (
+				2A6247E727EA9CA300469462 /* libvpx */,
+				2A624F8427EA9FE700469462 /* libvpx.xcodeproj */,
+				2A6247DB27EA9C7C00469462 /* Products */,
+				2A624F9527EA9FFF00469462 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		2A6247DB27EA9C7C00469462 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2A6247DA27EA9C7C00469462 /* vpxenc */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2A6247E727EA9CA300469462 /* libvpx */ = {
+			isa = PBXGroup;
+			children = (
+				2A6247EB27EA9CA300469462 /* vpxenc.c */,
+				2A624FAD27EAA16C00469462 /* third_party */,
+				2A624FAA27EAA0F800469462 /* webmenc.cc */,
+				2A624FA927EAA0F800469462 /* webmenc.h */,
+				2A624FA527EAA0C900469462 /* vpxstats.c */,
+				2A624FA627EAA0C900469462 /* vpxstats.h */,
+				2A624FA227EAA0AF00469462 /* ivfenc.c */,
+				2A624FA127EAA0AF00469462 /* ivfenc.h */,
+				2A624F9D27EAA07F00469462 /* rate_hist.c */,
+				2A624F9E27EAA07F00469462 /* rate_hist.h */,
+				2A624F9A27EAA05C00469462 /* warnings.c */,
+				2A624F9927EAA05C00469462 /* warnings.h */,
+				2A62516D27EB025100469462 /* tools_common.c */,
+				2A62516E27EB025100469462 /* tools_common.h */,
+				2A62517627EB028400469462 /* args.c */,
+				2A62517727EB028400469462 /* args.h */,
+			);
+			name = libvpx;
+			path = ../../../ext/libvpx;
+			sourceTree = "<group>";
+		};
+		2A624F8527EA9FE700469462 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2A624F8A27EA9FE700469462 /* libvpx_x86_64.a */,
+				2A624F8C27EA9FE700469462 /* libvpx_arm64.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2A624F9527EA9FFF00469462 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2A62514827EAFF6000469462 /* libvpx.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		2A624FAD27EAA16C00469462 /* third_party */ = {
+			isa = PBXGroup;
+			children = (
+				2A624FAE27EAA16C00469462 /* libwebm */,
+			);
+			path = third_party;
+			sourceTree = "<group>";
+		};
+		2A624FAE27EAA16C00469462 /* libwebm */ = {
+			isa = PBXGroup;
+			children = (
+				2A624FB127EAA16C00469462 /* mkvmuxer */,
+				2A624FB927EAA16C00469462 /* common */,
+				2A624FBF27EAA16C00469462 /* mkvparser */,
+			);
+			path = libwebm;
+			sourceTree = "<group>";
+		};
+		2A624FB127EAA16C00469462 /* mkvmuxer */ = {
+			isa = PBXGroup;
+			children = (
+				2A624FB227EAA16C00469462 /* mkvmuxertypes.h */,
+				2A624FB327EAA16C00469462 /* mkvmuxerutil.h */,
+				2A624FB427EAA16C00469462 /* mkvwriter.h */,
+				2A624FB527EAA16C00469462 /* mkvmuxer.h */,
+				2A624FB627EAA16C00469462 /* mkvwriter.cc */,
+				2A624FB727EAA16C00469462 /* mkvmuxerutil.cc */,
+				2A624FB827EAA16C00469462 /* mkvmuxer.cc */,
+			);
+			path = mkvmuxer;
+			sourceTree = "<group>";
+		};
+		2A624FB927EAA16C00469462 /* common */ = {
+			isa = PBXGroup;
+			children = (
+				2A624FBA27EAA16C00469462 /* hdr_util.cc */,
+				2A624FBB27EAA16C00469462 /* hdr_util.h */,
+				2A624FBC27EAA16C00469462 /* file_util.h */,
+				2A624FBD27EAA16C00469462 /* webmids.h */,
+				2A624FBE27EAA16C00469462 /* file_util.cc */,
+			);
+			path = common;
+			sourceTree = "<group>";
+		};
+		2A624FBF27EAA16C00469462 /* mkvparser */ = {
+			isa = PBXGroup;
+			children = (
+				2A624FC027EAA16C00469462 /* mkvreader.cc */,
+				2A624FC127EAA16C00469462 /* mkvparser.cc */,
+				2A624FC227EAA16C00469462 /* mkvreader.h */,
+				2A624FC327EAA16C00469462 /* mkvparser.h */,
+			);
+			path = mkvparser;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2A6247D927EA9C7C00469462 /* vpxenc */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2A6247E127EA9C7C00469462 /* Build configuration list for PBXNativeTarget "vpxenc" */;
+			buildPhases = (
+				2A6247D627EA9C7C00469462 /* Sources */,
+				2A6247D727EA9C7C00469462 /* Frameworks */,
+				2A6247D827EA9C7C00469462 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2A624F9227EA9FFA00469462 /* PBXTargetDependency */,
+				2A624F9427EA9FFA00469462 /* PBXTargetDependency */,
+			);
+			name = vpxenc;
+			productName = vpxenc;
+			productReference = 2A6247DA27EA9C7C00469462 /* vpxenc */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2A6247D227EA9C7C00469462 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1220;
+				TargetAttributes = {
+					2A6247D927EA9C7C00469462 = {
+						CreatedOnToolsVersion = 12.2;
+					};
+				};
+			};
+			buildConfigurationList = 2A6247D527EA9C7C00469462 /* Build configuration list for PBXProject "vpxenc" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 2A6247D127EA9C7C00469462;
+			productRefGroup = 2A6247DB27EA9C7C00469462 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 2A624F8527EA9FE700469462 /* Products */;
+					ProjectRef = 2A624F8427EA9FE700469462 /* libvpx.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				2A6247D927EA9C7C00469462 /* vpxenc */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		2A624F8A27EA9FE700469462 /* libvpx_x86_64.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libvpx_x86_64.a;
+			remoteRef = 2A624F8927EA9FE700469462 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2A624F8C27EA9FE700469462 /* libvpx_arm64.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libvpx_arm64.a;
+			remoteRef = 2A624F8B27EA9FE700469462 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2A6247D627EA9C7C00469462 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2A62503F27EAA16D00469462 /* mkvmuxerutil.cc in Sources */,
+				2A62504327EAA16D00469462 /* mkvreader.cc in Sources */,
+				2A624FA327EAA0AF00469462 /* ivfenc.c in Sources */,
+				2A62504127EAA16D00469462 /* hdr_util.cc in Sources */,
+				2A624F9B27EAA05C00469462 /* warnings.c in Sources */,
+				2A62517827EB028400469462 /* args.c in Sources */,
+				2A624FA727EAA0C900469462 /* vpxstats.c in Sources */,
+				2A62516F27EB025100469462 /* tools_common.c in Sources */,
+				2A624FAB27EAA0F800469462 /* webmenc.cc in Sources */,
+				2A624CCA27EA9CA500469462 /* vpxenc.c in Sources */,
+				2A62504027EAA16D00469462 /* mkvmuxer.cc in Sources */,
+				2A62504227EAA16D00469462 /* file_util.cc in Sources */,
+				2A62503E27EAA16D00469462 /* mkvwriter.cc in Sources */,
+				2A624F9F27EAA07F00469462 /* rate_hist.c in Sources */,
+				2A62504427EAA16D00469462 /* mkvparser.cc in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2A624F9227EA9FFA00469462 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = libvpx_arm64;
+			targetProxy = 2A624F9127EA9FFA00469462 /* PBXContainerItemProxy */;
+		};
+		2A624F9427EA9FFA00469462 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = libvpx_x86_64;
+			targetProxy = 2A624F9327EA9FFA00469462 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		2A6247DF27EA9C7C00469462 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CLANG_X86_VECTOR_INSTRUCTIONS = avx512;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		2A6247E027EA9C7C00469462 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CLANG_X86_VECTOR_INSTRUCTIONS = avx512;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		2A6247E227EA9C7C00469462 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = (
+					../../../ext/libvpx,
+					../../../ext/libvpx/third_party/libyuv/include,
+					../../../ext/libvpx/third_party/libwebm,
+				);
+				"HEADER_SEARCH_PATHS[arch=arm64]" = (
+					"$(inherited)",
+					./libvpx_config_arm64,
+				);
+				"HEADER_SEARCH_PATHS[arch=x86_64]" = (
+					"$(inherited)",
+					./libvpx_config_x86_64,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		2A6247E327EA9C7C00469462 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = (
+					../../../ext/libvpx,
+					../../../ext/libvpx/third_party/libyuv/include,
+					../../../ext/libvpx/third_party/libwebm,
+				);
+				"HEADER_SEARCH_PATHS[arch=arm64]" = (
+					"$(inherited)",
+					./libvpx_config_arm64,
+				);
+				"HEADER_SEARCH_PATHS[arch=x86_64]" = (
+					"$(inherited)",
+					./libvpx_config_x86_64,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2A6247D527EA9C7C00469462 /* Build configuration list for PBXProject "vpxenc" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A6247DF27EA9C7C00469462 /* Debug */,
+				2A6247E027EA9C7C00469462 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2A6247E127EA9C7C00469462 /* Build configuration list for PBXNativeTarget "vpxenc" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A6247E227EA9C7C00469462 /* Debug */,
+				2A6247E327EA9C7C00469462 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2A6247D227EA9C7C00469462 /* Project object */;
+}
