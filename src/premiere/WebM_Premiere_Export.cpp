@@ -114,8 +114,11 @@ PrMkvWriter::Position() const
 {
 	prInt64 pos = 0;
 
-// son of a gun, fileSeekMode_End and fileSeekMode_Current are flipped inside Premiere!
-#define PR_SEEK_CURRENT fileSeekMode_End
+#if kPrSDKExportFileSuiteVersion == kPrSDKExportFileSuiteVersion1
+#define PR_SEEK_CURRENT fileSeekMode_End // there was a bug in Premiere - fileSeekMode_End was really fileSeekMode_Current
+#else
+#define PR_SEEK_CURRENT fileSeekMode_Current
+#endif
 
 	prSuiteError err = _fileSuite->Seek(_fileObject, 0, pos, PR_SEEK_CURRENT);
 	
