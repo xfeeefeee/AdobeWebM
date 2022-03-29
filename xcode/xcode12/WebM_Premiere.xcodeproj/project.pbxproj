@@ -13,11 +13,11 @@
 		2A62475327E93B6C00469462 /* WebM_Premiere_Export.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A62472827E93B6C00469462 /* WebM_Premiere_Export.cpp */; };
 		2A62479927E9435800469462 /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A62476C27E9430700469462 /* libogg.a */; };
 		2A62479A27E9435800469462 /* libvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A62477227E9430700469462 /* libvorbis.a */; };
-		2A62479B27E9435800469462 /* liblibvpx_arm64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A62476627E9430600469462 /* liblibvpx_arm64.a */; };
+		2A62479B27E9435800469462 /* libvpx_arm64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A62476627E9430600469462 /* libvpx_arm64.a */; };
 		2A62479C27E9435800469462 /* libvpx_x86_64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A62476427E9430600469462 /* libvpx_x86_64.a */; };
 		2A62479D27E9435800469462 /* libwebm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A62478127E9430700469462 /* libwebm.a */; };
-		2A62479E27E9435800469462 /* libopus_arm64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A62477B27E9430700469462 /* libopus_arm64.a */; };
-		2A62479F27E9435800469462 /* libopus_x86_64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A62477927E9430700469462 /* libopus_x86_64.a */; };
+		2AC4436227F2E568006DD0F4 /* libopus_arm64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A62477B27E9430700469462 /* libopus_arm64.a */; };
+		2AC4436327F2E568006DD0F4 /* libopus_x86_64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A62477927E9430700469462 /* libopus_x86_64.a */; };
 		2AD87EDD2199DF7500A0FE45 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AD87EDC2199DF7500A0FE45 /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
@@ -150,13 +150,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2AC4436227F2E568006DD0F4 /* libopus_arm64.a in Frameworks */,
+				2AC4436327F2E568006DD0F4 /* libopus_x86_64.a in Frameworks */,
 				2A62479927E9435800469462 /* libogg.a in Frameworks */,
 				2A62479A27E9435800469462 /* libvorbis.a in Frameworks */,
-				2A62479B27E9435800469462 /* liblibvpx_arm64.a in Frameworks */,
+				2A62479B27E9435800469462 /* libvpx_arm64.a in Frameworks */,
 				2A62479C27E9435800469462 /* libvpx_x86_64.a in Frameworks */,
 				2A62479D27E9435800469462 /* libwebm.a in Frameworks */,
-				2A62479E27E9435800469462 /* libopus_arm64.a in Frameworks */,
-				2A62479F27E9435800469462 /* libopus_x86_64.a in Frameworks */,
 				2AD87EDD2199DF7500A0FE45 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -228,7 +228,7 @@
 			isa = PBXGroup;
 			children = (
 				2A62476427E9430600469462 /* libvpx_x86_64.a */,
-				2A62476627E9430600469462 /* liblibvpx_arm64.a */,
+				2A62476627E9430600469462 /* libvpx_arm64.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -359,10 +359,10 @@
 			remoteRef = 2A62476327E9430600469462 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		2A62476627E9430600469462 /* liblibvpx_arm64.a */ = {
+		2A62476627E9430600469462 /* libvpx_arm64.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = liblibvpx_arm64.a;
+			path = libvpx_arm64.a;
 			remoteRef = 2A62476527E9430600469462 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -482,7 +482,6 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = WebM_Premiere_Prefix.pch;
@@ -498,7 +497,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = WebM_Premiere_Prefix.pch;
 				INFOPLIST_FILE = WebM_Premiere_Info.plist;
@@ -525,7 +523,6 @@
 					../../ext/opus/include,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				PREBINDING = NO;
 				PREMIERE_SDK = "\"../../ext/Premiere Pro CC 13.0 Mac SDK\"";
 				SDKROOT = macosx;
 			};
@@ -549,7 +546,6 @@
 					../../ext/opus/include,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				PREBINDING = NO;
 				PREMIERE_SDK = "\"../../ext/Premiere Pro CC 13.0 Mac SDK\"";
 				SDKROOT = macosx;
 			};
