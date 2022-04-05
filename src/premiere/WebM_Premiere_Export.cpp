@@ -786,22 +786,28 @@ CopyPixToImg(vpx_image_t *img, vpx_image_t *alpha_img, const PPixHand &outFrame,
 			
 			CopyVUYAToImg<unsigned short, unsigned short>(img, alpha_img, frameBufferP, rowbytes);
 		}
-		else if(pixFormat == PrPixelFormat_BGRA_4444_16u)
+		else if(pixFormat == PrPixelFormat_BGRA_4444_16u || pixFormat == PrPixelFormat_BGRX_4444_16u)
 		{
+			assert(pixFormat == PrPixelFormat_BGRA_4444_16u || alpha_img == NULL);
+		
 			if(img->bit_depth > 8)
 				CopyBGRAToImg<unsigned short, unsigned short, false>(img, alpha_img, frameBufferP, rowbytes);
 			else
 				CopyBGRAToImg<unsigned short, unsigned char, false>(img, alpha_img, frameBufferP, rowbytes);
 		}
-		else if(pixFormat == PrPixelFormat_BGRA_4444_8u)
+		else if(pixFormat == PrPixelFormat_BGRA_4444_8u || pixFormat == PrPixelFormat_BGRX_4444_8u)
 		{
+			assert(pixFormat == PrPixelFormat_BGRA_4444_8u || alpha_img == NULL);
+		
 			if(img->bit_depth > 8)
 				CopyBGRAToImg<unsigned char, unsigned short, false>(img, alpha_img, frameBufferP, rowbytes);
 			else
 				CopyBGRAToImg<unsigned char, unsigned char, false>(img, alpha_img, frameBufferP, rowbytes);
 		}
-		else if(pixFormat == PrPixelFormat_ARGB_4444_8u)
+		else if(pixFormat == PrPixelFormat_ARGB_4444_8u || pixFormat == PrPixelFormat_XRGB_4444_8u)
 		{
+			assert(pixFormat == PrPixelFormat_ARGB_4444_8u || alpha_img == NULL);
+		
 			if(img->bit_depth > 8)
 				CopyBGRAToImg<unsigned char, unsigned short, true>(img, alpha_img, frameBufferP, rowbytes);
 			else
