@@ -55,6 +55,8 @@
 	#define LONG_LONG_MAX LLONG_MAX
 #endif
 
+#include <queue>
+
 
 #include "vpx/vpx_encoder.h"
 #include "vpx/vp8cx.h"
@@ -1282,10 +1284,12 @@ exSDKExport(
 		
 		vpx_codec_ctx_t encoder;
 		vpx_codec_iter_t encoder_iter = NULL;
+		std::queue<vpx_codec_cx_pkt_t> encoder_queue;
 		
 		const uint64_t alpha_id = 1;
 		vpx_codec_ctx_t alpha_encoder;
 		vpx_codec_iter_t alpha_encoder_iter = NULL;
+		std::queue<vpx_codec_cx_pkt_t> alpha_encoder_queue;
 		
 		unsigned long deadline = VPX_DL_GOOD_QUALITY;
 
@@ -1567,6 +1571,9 @@ exSDKExport(
 					
 					private_data = malloc(private_size);
 					
+					if(private_data == NULL)
+						throw exportReturn_ErrMemory;
+					
 					memcpy(private_data, id_head, private_size);
 					
 					
@@ -1582,9 +1589,15 @@ exSDKExport(
 					
 					opus_buffer = (float *)malloc(sizeof(float) * audioChannels * opus_frame_size);
 					
+					if(opus_buffer == NULL)
+						throw exportReturn_ErrMemory;
+					
 					opus_compressed_buffer_size = sizeof(float) * audioChannels * opus_frame_size * 2; // why not?
 					
 					opus_compressed_buffer = (unsigned char *)malloc(opus_compressed_buffer_size);
+					
+					if(opus_compressed_buffer == NULL)
+						throw exportReturn_ErrMemory;
 				}
 				else
 					v_err = (err != 0 ? err : -1);
@@ -1642,6 +1655,9 @@ exSDKExport(
 					
 					private_data = MakePrivateData(header, header_comm, header_code, private_size);
 					
+					if(private_data == NULL)
+						throw exportReturn_ErrMemory;
+					
 					opus_frame_size = maxBlip;
 				}
 				else
@@ -1651,6 +1667,9 @@ exSDKExport(
 			for(int i=0; i < audioChannels; i++)
 			{
 				pr_audio_buffer[i] = (float *)malloc(sizeof(float) * opus_frame_size);
+				
+				if(pr_audio_buffer[i] == NULL)
+					throw exportReturn_ErrMemory;
 			}
 		}
 		
@@ -1986,19 +2005,88 @@ exSDKExport(
 				{
 					bool made_frame = false;
 					
-					const vpx_codec_cx_pkt_t *pkt = NULL;
-					const vpx_codec_cx_pkt_t *alpha_pkt = NULL;
-					
 					while(!made_frame && result == suiteError_NoError)
 					{
-						if(pkt == NULL)
-							pkt = vpx_codec_get_cx_data(&encoder, &encoder_iter);
-							
-						if(use_alpha && alpha_pkt == NULL)
-							alpha_pkt = vpx_codec_get_cx_data(&alpha_encoder, &alpha_encoder_iter);
-					
-						if(pkt != NULL && (!use_alpha || alpha_pkt != NULL))
+						while(const vpx_codec_cx_pkt_t *pkt = vpx_codec_get_cx_data(&encoder, &encoder_iter))
 						{
+							if(vbr_pass)
+							{
+								if(pkt->kind == VPX_CODEC_STATS_PKT)
+								{
+									vpx_codec_cx_pkt_t q_pkt = *pkt;
+									q_pkt.data.twopass_stats.buf = malloc(q_pkt.data.twopass_stats.sz);
+									if(q_pkt.data.twopass_stats.buf == NULL)
+										throw exportReturn_ErrMemory;
+									memcpy(q_pkt.data.twopass_stats.buf, pkt->data.twopass_stats.buf, q_pkt.data.twopass_stats.sz);
+									encoder_queue.push(q_pkt);
+								}
+							}
+							else
+							{
+								if(pkt->kind == VPX_CODEC_CX_FRAME_PKT)
+								{
+									vpx_codec_cx_pkt_t q_pkt = *pkt;
+									q_pkt.data.frame.buf = malloc(q_pkt.data.frame.sz);
+									if(q_pkt.data.frame.buf == NULL)
+										throw exportReturn_ErrMemory;
+									memcpy(q_pkt.data.frame.buf, pkt->data.frame.buf, q_pkt.data.frame.sz);
+									encoder_queue.push(q_pkt);
+								}
+							}
+							
+							assert(pkt->kind != VPX_CODEC_FPMB_STATS_PKT); // don't know what to do with this
+						}
+						
+						if(use_alpha)
+						{
+							while(const vpx_codec_cx_pkt_t *pkt = vpx_codec_get_cx_data(&alpha_encoder, &alpha_encoder_iter))
+							{
+								if(vbr_pass)
+								{
+									if(pkt->kind == VPX_CODEC_STATS_PKT)
+									{
+										vpx_codec_cx_pkt_t q_pkt = *pkt;
+										q_pkt.data.twopass_stats.buf = malloc(q_pkt.data.twopass_stats.sz);
+										if(q_pkt.data.twopass_stats.buf == NULL)
+											throw exportReturn_ErrMemory;
+										memcpy(q_pkt.data.twopass_stats.buf, pkt->data.twopass_stats.buf, q_pkt.data.twopass_stats.sz);
+										alpha_encoder_queue.push(q_pkt);
+									}
+								}
+								else
+								{
+									if(pkt->kind == VPX_CODEC_CX_FRAME_PKT)
+									{
+										vpx_codec_cx_pkt_t q_pkt = *pkt;
+										q_pkt.data.frame.buf = malloc(q_pkt.data.frame.sz);
+										if(q_pkt.data.frame.buf == NULL)
+											throw exportReturn_ErrMemory;
+										memcpy(q_pkt.data.frame.buf, pkt->data.frame.buf, q_pkt.data.frame.sz);
+										alpha_encoder_queue.push(q_pkt);
+									}
+								}
+								
+								assert(pkt->kind != VPX_CODEC_FPMB_STATS_PKT); // don't know what to do with this
+							}
+						}
+						
+						if(!encoder_queue.empty() && (!use_alpha || !alpha_encoder_queue.empty()))
+						{
+							vpx_codec_cx_pkt_t *pkt = NULL;
+							vpx_codec_cx_pkt_t *alpha_pkt = NULL;
+						
+							vpx_codec_cx_pkt_t pkt_data;
+							vpx_codec_cx_pkt_t alpha_pkt_data;
+							
+							pkt_data = encoder_queue.front();
+							pkt = &pkt_data;
+							
+							if(use_alpha)
+							{
+								alpha_pkt_data = alpha_encoder_queue.front();
+								alpha_pkt = &alpha_pkt_data;
+							}
+						
 							if(pkt->kind == VPX_CODEC_STATS_PKT)
 							{
 								assert(vbr_pass);
@@ -2073,7 +2161,14 @@ exSDKExport(
 								}
 							}
 							
-							assert(pkt->kind != VPX_CODEC_FPMB_STATS_PKT); // don't know what to do with this
+							free(vbr_pass ? pkt_data.data.twopass_stats.buf : pkt_data.data.frame.buf);
+							encoder_queue.pop();
+							
+							if(use_alpha)
+							{
+								free(vbr_pass ? alpha_pkt_data.data.twopass_stats.buf : alpha_pkt_data.data.frame.buf);
+								alpha_encoder_queue.pop();
+							}
 						}
 						
 						if(vbr_pass)
@@ -2084,8 +2179,8 @@ exSDKExport(
 							{
 								made_frame = false;
 								
-								pkt = NULL;
-								alpha_pkt = NULL;
+								assert(encoder_queue.empty());
+								assert(alpha_encoder_queue.empty());
 							}
 							
 							// the final packet was just written, so break
@@ -2193,7 +2288,7 @@ exSDKExport(
 										if(encode_err == VPX_CODEC_OK)
 										{
 											videoEncoderTime += frameRateP.value.timeValue;
-
+											
 											encoder_iter = NULL;
 										}
 										else
@@ -2318,13 +2413,16 @@ exSDKExport(
 		if(exportInfoP->exportVideo)
 		{
 			if(result == malNoError)
-				assert(NULL == vpx_codec_get_cx_data(&encoder, &encoder_iter));
+				assert(NULL == vpx_codec_get_cx_data(&encoder, &encoder_iter) && encoder_queue.empty());
 		
 			vpx_codec_err_t destroy_err = vpx_codec_destroy(&encoder);
 			assert(destroy_err == VPX_CODEC_OK);
 			
 			if(use_alpha)
 			{
+				if(result == malNoError)
+					assert(NULL == vpx_codec_get_cx_data(&alpha_encoder, &alpha_encoder_iter) && alpha_encoder_queue.empty());
+				
 				vpx_codec_err_t alpha_destroy_err = vpx_codec_destroy(&alpha_encoder);
 				assert(alpha_destroy_err == VPX_CODEC_OK);
 			}
