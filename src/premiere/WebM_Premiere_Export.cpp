@@ -1290,6 +1290,8 @@ exSDKExport(
 		vpx_codec_ctx_t alpha_encoder;
 		vpx_codec_iter_t alpha_encoder_iter = NULL;
 		std::queue<vpx_codec_cx_pkt_t> alpha_encoder_queue;
+
+		const bool copy_buffers = use_alpha;
 		
 		unsigned long deadline = VPX_DL_GOOD_QUALITY;
 
@@ -2014,10 +2016,15 @@ exSDKExport(
 								if(pkt->kind == VPX_CODEC_STATS_PKT)
 								{
 									vpx_codec_cx_pkt_t q_pkt = *pkt;
-									q_pkt.data.twopass_stats.buf = malloc(q_pkt.data.twopass_stats.sz);
-									if(q_pkt.data.twopass_stats.buf == NULL)
-										throw exportReturn_ErrMemory;
-									memcpy(q_pkt.data.twopass_stats.buf, pkt->data.twopass_stats.buf, q_pkt.data.twopass_stats.sz);
+
+									if(copy_buffers)
+									{
+										q_pkt.data.twopass_stats.buf = malloc(q_pkt.data.twopass_stats.sz);
+										if(q_pkt.data.twopass_stats.buf == NULL)
+											throw exportReturn_ErrMemory;
+										memcpy(q_pkt.data.twopass_stats.buf, pkt->data.twopass_stats.buf, q_pkt.data.twopass_stats.sz);
+									}
+
 									encoder_queue.push(q_pkt);
 								}
 							}
@@ -2026,19 +2033,29 @@ exSDKExport(
 								if(pkt->kind == VPX_CODEC_CX_FRAME_PKT)
 								{
 									vpx_codec_cx_pkt_t q_pkt = *pkt;
-									q_pkt.data.frame.buf = malloc(q_pkt.data.frame.sz);
-									if(q_pkt.data.frame.buf == NULL)
-										throw exportReturn_ErrMemory;
-									memcpy(q_pkt.data.frame.buf, pkt->data.frame.buf, q_pkt.data.frame.sz);
+
+									if(copy_buffers)
+									{
+										q_pkt.data.frame.buf = malloc(q_pkt.data.frame.sz);
+										if(q_pkt.data.frame.buf == NULL)
+											throw exportReturn_ErrMemory;
+										memcpy(q_pkt.data.frame.buf, pkt->data.frame.buf, q_pkt.data.frame.sz);
+									}
+
 									encoder_queue.push(q_pkt);
 								}
 							}
 							
 							assert(pkt->kind != VPX_CODEC_FPMB_STATS_PKT); // don't know what to do with this
+
+							if(!copy_buffers)
+								break;
 						}
 						
 						if(use_alpha)
 						{
+							assert(copy_buffers);
+
 							while(const vpx_codec_cx_pkt_t *pkt = vpx_codec_get_cx_data(&alpha_encoder, &alpha_encoder_iter))
 							{
 								if(vbr_pass)
@@ -2161,11 +2178,14 @@ exSDKExport(
 								}
 							}
 							
-							free(vbr_pass ? pkt_data.data.twopass_stats.buf : pkt_data.data.frame.buf);
+							if(copy_buffers)
+								free(vbr_pass ? pkt_data.data.twopass_stats.buf : pkt_data.data.frame.buf);
+
 							encoder_queue.pop();
 							
 							if(use_alpha)
 							{
+								assert(copy_buffers);
 								free(vbr_pass ? alpha_pkt_data.data.twopass_stats.buf : alpha_pkt_data.data.frame.buf);
 								alpha_encoder_queue.pop();
 							}
