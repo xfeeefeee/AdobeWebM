@@ -1,0 +1,8 @@
+{
+  "dependencies": [
+    "libvorbis",
+    "libvpx",
+    "libwebm",
+    "opus"
+  ]
+}

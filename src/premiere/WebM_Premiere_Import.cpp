@@ -45,9 +45,9 @@
 
 #include <vorbis/codec.h>
 
-#include "opus_multistream.h"
+#include "opus/opus_multistream.h"
 
-#include "mkvparser/mkvparser.h"
+#include "webm/mkvparser/mkvparser.h"
 
 #include <assert.h>
 #include <math.h>
@@ -55,13 +55,28 @@
 #include <sstream>
 #include <map>
 #include <queue>
+#include <mutex>
+
+#define WIN32_LEAN_AND_MEAN
+#define _WIN32_WINNT _WIN32_WINNT_WIN10 
+#define WINVER _WIN32_WINNT_WIN10 
+#define NTDDI_VERSION NTDDI_WIN10 
+#define NOMINMAX
+#include <Windows.h>
 
 #ifdef PRMAC_ENV
 	#include <mach/mach.h>
 #endif
 
-int g_num_cpus = 1;
+#include <vector>
 
+//#define ENABLE_ASYNC_IMPORTER
+
+
+#define DEBUGF(...) {char cad[512]; sprintf(cad, __VA_ARGS__);  OutputDebugStringA(cad);}
+//#define DEBUGF(...)
+
+int g_num_cpus = 1;
 
 
 #if IMPORTMOD_VERSION <= IMPORTMOD_VERSION_9
@@ -72,6 +87,11 @@ typedef PrSDKPPixCacheSuite PrCacheSuite;
 #define PrCacheVersion	kPrSDKPPixCacheSuiteVersion
 #endif
 
+
+
+static std::vector<long long>
+webm_calc_frame_timestamps(mkvparser::Segment* segment,
+	int				video_track);
 
 class PrMkvReader : public mkvparser::IMkvReader
 {
@@ -217,6 +237,8 @@ typedef struct
 	PrSDKPPix2Suite			*PPix2Suite;
 	PrSDKTimeSuite			*TimeSuite;
 	PrSDKImporterFileManagerSuite *FileSuite;
+	std::vector<long long>	*frame_times;
+	prUTF16Char				*filepath;
 } ImporterLocalRec8, *ImporterLocalRec8Ptr, **ImporterLocalRec8H;
 
 
@@ -261,7 +283,8 @@ SDKInit(
 	SYSTEM_INFO systemInfo;
 	GetSystemInfo(&systemInfo);
 
-	g_num_cpus = systemInfo.dwNumberOfProcessors;
+	//g_num_cpus = systemInfo.dwNumberOfProcessors;
+	g_num_cpus = 1;
 #endif
 
 	return malNoError;
@@ -384,6 +407,7 @@ SDKOpenFile8(
 	imFileRef		*SDKfileRef, 
 	imFileOpenRec8	*SDKfileOpenRec8)
 {
+	DEBUGF("SDKOpenFile8...\r\n");
 	prMALError			result = malNoError;
 
 	ImporterLocalRec8H	localRecH = NULL;
@@ -418,6 +442,8 @@ SDKOpenFile8(
 		localRecP->vorbis_setup = false;
 		localRecP->opus_dec = NULL;
 		localRecP->sample_map = NULL;
+		localRecP->frame_times = NULL;
+		localRecP->filepath = NULL;
 		localRecP->total_samples = 0;
 		
 		// Acquire needed suites
@@ -444,6 +470,13 @@ SDKOpenFile8(
 	if(localRecP)
 	{
 		const prUTF16Char *path = SDKfileOpenRec8->fileinfo.filepath;
+
+		if (localRecP->filepath) {
+			free(localRecP->filepath);
+			localRecP->filepath = NULL;
+		}
+
+		localRecP->filepath = _wcsdup(path);
 	
 	#ifdef PRWIN_ENV
 		HANDLE fileH = CreateFileW(path,
@@ -609,7 +642,9 @@ SDKOpenFile8(
 								// VPX_CODEC_USE_POSTPROC here.  Things like VP8_DEMACROBLOCK and
 								// VP8_MFQE (Multiframe Quality Enhancement) could be cool.
 								
-								const vpx_codec_flags_t flags = VPX_CODEC_USE_FRAME_THREADING;
+								// note that VPX_CODEC_USE_FRAME_THREADING is a noop in at least vp9 - it was removed from the dec entirely
+								//const vpx_codec_flags_t flags = VPX_CODEC_USE_FRAME_THREADING;
+								const vpx_codec_flags_t flags = 0;
 								
 								codec_err = vpx_codec_dec_init(&decoder, iface, &config, flags);
 								
@@ -617,6 +652,13 @@ SDKOpenFile8(
 									localRecP->vpx_setup = true;
 							}
 						}
+					}
+				}
+
+				if (localRecP->video_track >= 0) {
+					if (!localRecP->frame_times) {
+						auto frame_times = webm_calc_frame_timestamps(localRecP->segment, localRecP->video_track);
+						localRecP->frame_times = new std::vector<long long>(std::move(frame_times));
 					}
 				}
 		
@@ -970,6 +1012,7 @@ SDKOpenFile8(
 		stdParms->piSuites->memFuncs->unlockHandle(reinterpret_cast<char**>(SDKfileOpenRec8->privatedata));
 	}
 
+	DEBUGF("SDKOpenFile8: return %lu\r\n", result);
 	return result;
 }
 
@@ -981,6 +1024,7 @@ SDKQuietFile(
 	imFileRef			*SDKfileRef, 
 	void				*privateData)
 {
+	DEBUGF("SDKQuietFile...\r\n");
 	// "Quiet File" really means close the file handle, but we're still
 	// using it and might open it again, so hold on to any stored data
 	// structures you don't want to re-create.
@@ -999,6 +1043,17 @@ SDKQuietFile(
 			delete localRecP->sample_map;
 			
 			localRecP->sample_map = NULL;
+		}
+
+		if (localRecP->frame_times != NULL) {
+			delete localRecP->frame_times;
+
+			localRecP->frame_times = NULL;
+		}
+
+		if (localRecP->filepath != NULL) {
+			free(localRecP->filepath);
+			localRecP->filepath = NULL;
 		}
 
 		if(localRecP->vpx_setup)
@@ -1052,6 +1107,7 @@ SDKQuietFile(
 		*SDKfileRef = imInvalidHandleValue;
 	}
 
+	DEBUGF("SDKQuietFile: %lu\r\n", malNoError);
 	return malNoError; 
 }
 
@@ -1062,6 +1118,7 @@ SDKCloseFile(
 	imFileRef			*SDKfileRef,
 	void				*privateData) 
 {
+	DEBUGF("SDKCloseFile...\r\n");
 	ImporterLocalRec8H ldataH	= reinterpret_cast<ImporterLocalRec8H>(privateData);
 	
 	// If file has not yet been closed
@@ -1088,6 +1145,7 @@ SDKCloseFile(
 		stdParms->piSuites->memFuncs->disposeHandle(reinterpret_cast<PrMemoryHandle>(ldataH));
 	}
 
+	DEBUGF("SDKCloseFile: %lu\r\n", malNoError);
 	return malNoError;
 }
 
@@ -1237,6 +1295,71 @@ SDKAnalysis(
 }
 
 
+static std::vector<long long>
+webm_calc_frame_timestamps(mkvparser::Segment* segment,
+	int				video_track)
+{
+	DEBUGF("webm_test_frame_timestamps\r\n");
+	std::vector<long long> frameTimes;
+	frameTimes.reserve(30 * 60 * 1);
+
+	unsigned int frame = 0;
+	uint64_t     tstamp = 0;
+
+	long nCluster = 0;
+
+	const mkvparser::Tracks* const pTracks = segment->GetTracks();
+	const mkvparser::Cluster* pCluster = segment->GetFirst();
+
+	long status = 0;
+
+	while ((pCluster != NULL) && !pCluster->EOS() && status >= 0)
+	{
+		const mkvparser::BlockEntry* pBlockEntry = NULL;
+
+		status = pCluster->GetFirst(pBlockEntry);
+
+		while ((pBlockEntry != NULL) && !pBlockEntry->EOS())
+		{
+			const mkvparser::Block* const pBlock = pBlockEntry->GetBlock();
+			const long long trackNum = pBlock->GetTrackNumber();
+
+			if (trackNum == video_track)
+			{
+				const unsigned long tn = static_cast<unsigned long>(trackNum);
+				const mkvparser::Track* const pTrack = pTracks->GetTrackByNumber(tn);
+
+				if (pTrack)
+				{
+					assert(pTrack->GetType() == mkvparser::Track::kVideo);
+					assert(pBlock->GetFrameCount() == 1);
+
+					if (pBlock->GetFrameCount() > 1) {
+						DEBUGF("frame %li multiple frames in block\r\n", frame);
+					}
+
+					tstamp = pBlock->GetTime(pCluster);
+
+					frame++;
+
+					frameTimes.push_back(tstamp);
+					DEBUGF("frame %li @ %I64d\r\n", frame, tstamp);
+				}
+			}
+
+			status = pCluster->GetNext(pBlockEntry, pBlockEntry);
+			//DEBUGF("next block, status %li, frame %li\r\n", status, frame);
+		}
+
+		long clusterCount = segment->GetCount();
+		pCluster = segment->GetNext(pCluster);
+		//DEBUGF("next cluster, nCluster was %li, count %li, frame %li, pCluster 0x%I64x\r\n", nCluster, clusterCount, frame, (unsigned long long)pCluster);
+		nCluster++;
+	}
+
+	return frameTimes;
+}
+
 static void
 webm_guess_framerate(mkvparser::Segment *segment,
 						int				video_track,
@@ -1340,10 +1463,15 @@ SDKGetInfo8(
 	imFileAccessRec8	*fileAccessInfo8, 
 	imFileInfoRec8		*SDKFileInfo8)
 {
+	DEBUGF("SDKGetInfo...\r\n");
 	prMALError					result				= malNoError;
 
 
+#ifdef ENABLE_ASYNC_IMPORTER
+	SDKFileInfo8->vidInfo.supportsAsyncIO			= kPrTrue;
+#else
 	SDKFileInfo8->vidInfo.supportsAsyncIO			= kPrFalse;
+#endif
 	SDKFileInfo8->vidInfo.supportsGetSourceVideo	= kPrTrue;
 	SDKFileInfo8->vidInfo.hasPulldown				= kPrFalse;
 	SDKFileInfo8->hasDataRate						= kPrFalse;
@@ -1531,7 +1659,6 @@ SDKGetInfo8(
 						}
 						
 						assert(localRecP->video_start_tstamp == 0); // unfortunately, it sometimes isn't
-						
 					
 						const double embedded_rate = pVideoTrack->GetFrameRate();
 						
@@ -1539,6 +1666,8 @@ SDKGetInfo8(
 						unsigned int fps_den = 0;
 						
 						webm_guess_framerate(localRecP->segment, localRecP->video_track, localRecP->video_start_tstamp, &fps_den, &fps_num);
+						double fps_calc = (double)fps_num / (double)fps_den;
+						DEBUGF("SDKGetInfo embedded_rate %f fps_num %li, fps_den %li, fps_calc %f, video_start_tstamp %I64d\r\n", embedded_rate, fps_num, fps_den, fps_calc, localRecP->video_start_tstamp);
 
 						if(embedded_rate > 0)
 						{
@@ -1696,6 +1825,7 @@ SDKGetInfo8(
 		
 	stdParms->piSuites->memFuncs->unlockHandle(reinterpret_cast<char**>(ldataH));
 
+	DEBUGF("SDKGetInfo: %lu\r\n", result);
 	return result;
 }
 
@@ -1749,13 +1879,13 @@ SDKPreferredFrameSize(
 #define PF_MAX_CHAN16			32768
 
 static inline unsigned short
-Demote(const unsigned short &val)
+Demote(const unsigned short val)
 {
 	return (val > PF_MAX_CHAN16 ? ( (val - 1) >> 1 ) + 1 : val >> 1);
 }
 
 static inline unsigned short
-Clamp16(const int &val)
+Clamp16(const int val)
 {
 	return (val < 0 ? 0 : val > PF_MAX_CHAN16 ? PF_MAX_CHAN16 : val);
 }
@@ -1763,25 +1893,25 @@ Clamp16(const int &val)
 
 template <typename IMG_PIX, typename VUYA_PIX>
 static inline VUYA_PIX
-ConvertDepth(const IMG_PIX &val, const int &depth);
+ConvertDepth(const IMG_PIX val, const int depth);
 
 template<>
 static inline unsigned short
-ConvertDepth<unsigned short, unsigned short>(const unsigned short &val, const int &depth)
+ConvertDepth<unsigned short, unsigned short>(const unsigned short val, const int depth)
 {
 	return Demote((val << (16 - depth)) | (val >> ((depth * 2) - 16)));
 }
 
 template<>
 static inline unsigned char
-ConvertDepth<unsigned short, unsigned char>(const unsigned short &val, const int &depth)
+ConvertDepth<unsigned short, unsigned char>(const unsigned short val, const int depth)
 {
 	return (val >> (depth - 8)); 
 }
 
 template<>
 static inline unsigned char
-ConvertDepth<unsigned char, unsigned char>(const unsigned char &val, const int &depth)
+ConvertDepth<unsigned char, unsigned char>(const unsigned char val, const int depth)
 {
 	assert(depth == 8);
 	return val; 
@@ -1797,22 +1927,22 @@ CopyImgToVUYA(const vpx_image_t * const img, char *frameBufferP, csSDK_int32 row
 	
 	assert(sub_y == 1);
 	
-	for(int y = 0; y < img->d_h; y++)
+	for(unsigned int y = 0, d_h = img->d_h, bit_depth = img->bit_depth; y < d_h; y++)
 	{
 		const IMG_PIX *imgY = (IMG_PIX *)(img->planes[VPX_PLANE_Y] + (img->stride[VPX_PLANE_Y] * y));
 		const IMG_PIX *imgU = (IMG_PIX *)(img->planes[VPX_PLANE_U] + (img->stride[VPX_PLANE_U] * (y / sub_y)));
 		const IMG_PIX *imgV = (IMG_PIX *)(img->planes[VPX_PLANE_V] + (img->stride[VPX_PLANE_V] * (y / sub_y)));
 		
-		VUYA_PIX *prVUYX = (VUYA_PIX *)(frameBufferP + (rowbytes * (img->d_h - 1 - y)));
+		VUYA_PIX *prVUYX = (VUYA_PIX *)(frameBufferP + (rowbytes * (d_h - 1 - y)));
 		
 		VUYA_PIX *prV = prVUYX + 0;
 		VUYA_PIX *prU = prVUYX + 1;
 		VUYA_PIX *prY = prVUYX + 2;
 		VUYA_PIX *prA = prVUYX + 3;
 		
-		for(int x=0; x < img->d_w; x++)
+		for(unsigned int x = 0, d_w = img->d_w; x < d_w; x++)
 		{
-			*prY = ConvertDepth<IMG_PIX, VUYA_PIX>(*imgY++, img->bit_depth);
+			*prY = ConvertDepth<IMG_PIX, VUYA_PIX>(*imgY++, bit_depth);
 			
 			if(x != 0 && (x % sub_x == 0))
 			{
@@ -1820,8 +1950,8 @@ CopyImgToVUYA(const vpx_image_t * const img, char *frameBufferP, csSDK_int32 row
 				imgV++;
 			}
 			
-			*prU = ConvertDepth<IMG_PIX, VUYA_PIX>(*imgU, img->bit_depth);
-			*prV = ConvertDepth<IMG_PIX, VUYA_PIX>(*imgV, img->bit_depth);
+			*prU = ConvertDepth<IMG_PIX, VUYA_PIX>(*imgU, bit_depth);
+			*prV = ConvertDepth<IMG_PIX, VUYA_PIX>(*imgV, bit_depth);
 			*prA = ConvertDepth<unsigned short, VUYA_PIX>(255, 8);
 			
 			prY += 4;
@@ -1859,26 +1989,26 @@ CopyImgToPix(const vpx_image_t * const img, PPixHand &ppix, PrSDKPPixSuite *PPix
 													
 		if(img->bit_depth == 8)
 		{
-			for(int y = 0; y < img->d_h; y++)
+			for(unsigned int y = 0, d_h = img->d_h, d_w = img->d_w; y < d_h; y++)
 			{
 				const unsigned char *imgY = img->planes[VPX_PLANE_Y] + (img->stride[VPX_PLANE_Y] * y);
 				
 				unsigned char *prY = (unsigned char *)Y_PixelAddress + (Y_RowBytes * y);
 				
-				memcpy(prY, imgY, img->d_w * sizeof(unsigned char));
+				memcpy(prY, imgY, d_w * sizeof(unsigned char));
 			}
 		}
 		else
 		{
-			for(int y = 0; y < img->d_h; y++)
+			for(unsigned int y = 0, d_h = img->d_h; y < d_h; y++)
 			{
 				const unsigned short *imgY = (unsigned short *)(img->planes[VPX_PLANE_Y] + (img->stride[VPX_PLANE_Y] * y));
 				
 				unsigned char *prY = (unsigned char *)Y_PixelAddress + (Y_RowBytes * y);
 				
-				for(int x=0; x < img->d_w; x++)
+				for(unsigned int x = 0, d_w = img->d_w, bit_depth = img->bit_depth; x < d_w; x++)
 				{
-					*prY++ = ConvertDepth<unsigned short, unsigned char>(*imgY++, img->bit_depth);
+					*prY++ = ConvertDepth<unsigned short, unsigned char>(*imgY++, bit_depth);
 				}
 			}
 		}
@@ -1909,11 +2039,13 @@ CopyImgToPix(const vpx_image_t * const img, PPixHand &ppix, PrSDKPPixSuite *PPix
 				
 				unsigned char *prU = (unsigned char *)U_PixelAddress + (U_RowBytes * y);
 				unsigned char *prV = (unsigned char *)V_PixelAddress + (V_RowBytes * y);
+
+				auto bit_depth = img->bit_depth;
 				
 				for(int x=0; x < chroma_width; x++)
 				{
-					*prU++ = ConvertDepth<unsigned short, unsigned char>(*imgU++, img->bit_depth);
-					*prV++ = ConvertDepth<unsigned short, unsigned char>(*imgV++, img->bit_depth);
+					*prU++ = ConvertDepth<unsigned short, unsigned char>(*imgU++, bit_depth);
+					*prV++ = ConvertDepth<unsigned short, unsigned char>(*imgV++, bit_depth);
 				}
 			}
 		}
@@ -1933,7 +2065,7 @@ CopyImgToPix(const vpx_image_t * const img, PPixHand &ppix, PrSDKPPixSuite *PPix
 			
 			if(img->bit_depth == 8)
 			{
-				for(int y = 0; y < img->d_h; y++)
+				for (unsigned int y = 0, d_h = img->d_h; y < d_h; y++)
 				{
 					const unsigned char *imgY = img->planes[VPX_PLANE_Y] + (img->stride[VPX_PLANE_Y] * y);
 					const unsigned char *imgU = img->planes[VPX_PLANE_U] + (img->stride[VPX_PLANE_U] * (y / sub_y));
@@ -1941,7 +2073,7 @@ CopyImgToPix(const vpx_image_t * const img, PPixHand &ppix, PrSDKPPixSuite *PPix
 					
 					unsigned char *prUYVY = (unsigned char *)frameBufferP + (rowbytes * y);
 					
-					for(int x=0; x < img->d_w; x++)
+					for(unsigned int x=0, d_w=img->d_w; x < d_w; x++)
 					{
 						if(x % 2 == 0)
 							*prUYVY++ = *imgU++;
@@ -1954,7 +2086,7 @@ CopyImgToPix(const vpx_image_t * const img, PPixHand &ppix, PrSDKPPixSuite *PPix
 			}
 			else
 			{
-				for(int y = 0; y < img->d_h; y++)
+				for (unsigned int y = 0, d_h = img->d_h; y < d_h; y++)
 				{
 					const unsigned short *imgY = (unsigned short *)(img->planes[VPX_PLANE_Y] + (img->stride[VPX_PLANE_Y] * y));
 					const unsigned short *imgU = (unsigned short *)(img->planes[VPX_PLANE_U] + (img->stride[VPX_PLANE_U] * (y / sub_y)));
@@ -1962,14 +2094,14 @@ CopyImgToPix(const vpx_image_t * const img, PPixHand &ppix, PrSDKPPixSuite *PPix
 					
 					unsigned char *prUYVY = (unsigned char *)frameBufferP + (rowbytes * y);
 					
-					for(int x=0; x < img->d_w; x++)
+					for(unsigned int x=0, d_w = img->d_w, bit_depth = img->bit_depth; x < d_w; x++)
 					{
 						if(x % 2 == 0)
-							*prUYVY++ = ConvertDepth<unsigned short, unsigned char>(*imgU++, img->bit_depth);
+							*prUYVY++ = ConvertDepth<unsigned short, unsigned char>(*imgU++, bit_depth);
 						else
-							*prUYVY++ = ConvertDepth<unsigned short, unsigned char>(*imgV++, img->bit_depth);
+							*prUYVY++ = ConvertDepth<unsigned short, unsigned char>(*imgV++, bit_depth);
 						
-						*prUYVY++ = ConvertDepth<unsigned short, unsigned char>(*imgY++, img->bit_depth);
+						*prUYVY++ = ConvertDepth<unsigned short, unsigned char>(*imgY++, bit_depth);
 					}
 				}
 			}
@@ -2000,22 +2132,22 @@ CopyImgToPix(const vpx_image_t * const img, PPixHand &ppix, PrSDKPPixSuite *PPix
 			// This is only necessary because of a bug with VUYA_4444_16u
 			assert(img->bit_depth > 8);
 		
-			for(int y = 0; y < img->d_h; y++)
+			for (unsigned int y = 0, d_h = img->d_h, bit_depth=img->bit_depth; y < d_h; y++)
 			{
 				const unsigned short *imgY = (unsigned short *)(img->planes[VPX_PLANE_Y] + (img->stride[VPX_PLANE_Y] * y));
 				const unsigned short *imgU = (unsigned short *)(img->planes[VPX_PLANE_U] + (img->stride[VPX_PLANE_U] * (y / sub_y)));
 				const unsigned short *imgV = (unsigned short *)(img->planes[VPX_PLANE_V] + (img->stride[VPX_PLANE_V] * (y / sub_y)));
 				
-				unsigned short *prBGRA = (unsigned short *)(frameBufferP + (rowbytes * (img->d_h - 1 - y)));
+				unsigned short *prBGRA = (unsigned short *)(frameBufferP + (rowbytes * (d_h - 1 - y)));
 				
 				unsigned short *prB = prBGRA + 0;
 				unsigned short *prG = prBGRA + 1;
 				unsigned short *prR = prBGRA + 2;
 				unsigned short *prA = prBGRA + 3;
 				
-				for(int x=0; x < img->d_w; x++)
+				for(unsigned int x = 0, d_w = img->d_w; x < d_w; x++)
 				{
-					const int prY = ConvertDepth<unsigned short, unsigned short>(*imgY++, img->bit_depth);
+					const int prY = ConvertDepth<unsigned short, unsigned short>(*imgY++, bit_depth);
 					
 					if(x != 0 && (x % sub_x == 0))
 					{
@@ -2023,8 +2155,8 @@ CopyImgToPix(const vpx_image_t * const img, PPixHand &ppix, PrSDKPPixSuite *PPix
 						imgV++;
 					}
 					
-					const int prU = ConvertDepth<unsigned short, unsigned short>(*imgU, img->bit_depth);
-					const int prV = ConvertDepth<unsigned short, unsigned short>(*imgV, img->bit_depth);
+					const int prU = ConvertDepth<unsigned short, unsigned short>(*imgU, bit_depth);
+					const int prV = ConvertDepth<unsigned short, unsigned short>(*imgV, bit_depth);
 					
 					const int subY = ConvertDepth<unsigned short, unsigned short>(16, 8);
 					const int subUV = ConvertDepth<unsigned short, unsigned short>(128, 8);
@@ -2046,6 +2178,12 @@ CopyImgToPix(const vpx_image_t * const img, PPixHand &ppix, PrSDKPPixSuite *PPix
 	}
 }
 
+static csSDK_int32 mkv_timestamp_to_framenum(const std::vector<long long>& frame_times, const long long tstamp)
+{
+	auto it = std::lower_bound(frame_times.begin(), frame_times.end(), tstamp);
+	return it - frame_times.begin();
+}
+
 static bool
 store_vpx_img(
 	const vpx_image_t *img,
@@ -2057,15 +2195,26 @@ store_vpx_img(
 	localRecP->TimeSuite->GetTicksPerSecond(&ticksPerSecond);
 	
 	csSDK_int32 theFrame = 0;
-	
+
+	PrTime ticksPerFrame = (ticksPerSecond * (PrTime)localRecP->frameRateDen) / (PrTime)localRecP->frameRateNum;
 	if(localRecP->frameRateDen == 0) // i.e. still frame
 	{
 		theFrame = 0;
 	}
 	else
 	{
-		PrTime ticksPerFrame = (ticksPerSecond * (PrTime)localRecP->frameRateDen) / (PrTime)localRecP->frameRateNum;
 		theFrame = sourceVideoRec->inFrameTime / ticksPerFrame;
+
+		const long long timeCodeScale = localRecP->segment->GetInfo()->GetTimeCodeScale();
+		const long long timeCode = ((sourceVideoRec->inFrameTime * (S2NS / timeCodeScale)) + (ticksPerSecond / 2)) / ticksPerSecond;
+		const long long target_tstamp = (timeCode * timeCodeScale) + localRecP->video_start_tstamp;
+
+		csSDK_int32 newTheFrame = mkv_timestamp_to_framenum(*localRecP->frame_times, target_tstamp);
+		DEBUGF("store_vpx_img theFrame %li newTheFrame %li\r\n", theFrame, newTheFrame);
+		if (newTheFrame != theFrame) {
+			DEBUGF("!!!!!!!!! store_vpx_img theFrame %li <> newTheFrame %li\r\n", theFrame, newTheFrame);
+		}
+		theFrame = newTheFrame;
 	}
 	
 	imFrameFormat *frameFormat = &sourceVideoRec->inFrameFormats[0];
@@ -2112,9 +2261,16 @@ store_vpx_img(
 	const uint64_t fps_num = localRecP->frameRateNum;
 	const uint64_t fps_den = localRecP->frameRateDen;
 	
-	const csSDK_int32 decodedFrame = (((decoded_tstamp - localRecP->video_start_tstamp) * fps_num / fps_den) + (S2NS / 2)) / S2NS;
-	
-	const bool requested_frame = (decodedFrame == theFrame);
+	csSDK_int32 decodedFrame = (((decoded_tstamp - localRecP->video_start_tstamp) * fps_num / fps_den) + (S2NS / 2)) / S2NS;
+	csSDK_int32 newDecodedFrame = mkv_timestamp_to_framenum(*localRecP->frame_times, decoded_tstamp);
+	DEBUGF("store_vpx_img decodedFrame %li newDecodedFrame %li\r\n", decodedFrame, newDecodedFrame);
+	if (decodedFrame != newDecodedFrame) {
+		DEBUGF("!!!!!!!!! store_vpx_img decodedFrame %li <> newDecodedFrame %li\r\n", decodedFrame, newDecodedFrame);
+		decodedFrame = newDecodedFrame;
+	}
+
+	bool requested_frame = (decodedFrame == theFrame);
+	DEBUGF("SDKGetSourceVideo... decoded frame %li (decoded_tstamp %I64d, theFrame %li, inFrameTime %I64d, ticksPerSecond %I64d, ticksPerFrame %I64d, frameRateDen %li, frameRateNum %li)\r\n", decodedFrame, decoded_tstamp, theFrame, sourceVideoRec->inFrameTime, ticksPerSecond, ticksPerFrame, localRecP->frameRateDen, localRecP->frameRateNum);
 	
 	// This is a nice Premiere feature.  We often have to decode many frames
 	// in a GOP (group of pictures) before we decode the one Premiere asked for.
@@ -2133,6 +2289,37 @@ store_vpx_img(
 	}
 	else
 	{
+		// if the target is beyond our actual frames, duplicate the last frame
+		
+		int last_frame = localRecP->frame_times->size() - 1;
+
+		if (decodedFrame == last_frame) {
+
+			DEBUGF("!!! SDKGetSourceVideo... theFrame %li beyond last frame %li\r\n", theFrame, last_frame);
+			// TODO can we figure out the actual max frames that AE will ask for so the cluster does not need to be re-decoded and we can proactively cache frames past the end?
+			for (auto curFrame = decodedFrame + 1; curFrame <= theFrame; curFrame++) {
+				PPixHand ppixClone;
+
+				localRecP->PPixCreatorSuite->ClonePPix(ppix, &ppixClone, PrPPixBufferAccess_ReadOnly);
+
+				DEBUGF("!!! SDKGetSourceVideo... caching clone of decodedFrame %li as %li -- theFrame %li beyond last frame %li\r\n", decodedFrame, curFrame, theFrame, last_frame);
+				localRecP->PPixCacheSuite->AddFrameToCache(	localRecP->importerID,
+															0,
+															ppixClone,
+															curFrame,
+															NULL,
+															NULL);
+
+				if (curFrame == theFrame) {
+					*sourceVideoRec->outFrame = ppixClone;
+					requested_frame = true;
+				}
+				else {
+					localRecP->PPixSuite->Dispose(ppixClone);
+				}
+			}
+		}
+
 		// Premiere copied the frame to its cache, so we dispose ours.
 		// Very obvious memory leak if we don't.
 		localRecP->PPixSuite->Dispose(ppix);
@@ -2160,16 +2347,35 @@ SDKGetSourceVideo(
 	localRecP->TimeSuite->GetTicksPerSecond(&ticksPerSecond);
 
 	csSDK_int32		theFrame	= 0;
-	
+
+	PrTime ticksPerFrame = (ticksPerSecond * (PrTime)localRecP->frameRateDen) / (PrTime)localRecP->frameRateNum;
 	if(localRecP->frameRateDen == 0) // i.e. still frame
 	{
 		theFrame = 0;
 	}
 	else
 	{
-		PrTime ticksPerFrame = (ticksPerSecond * (PrTime)localRecP->frameRateDen) / (PrTime)localRecP->frameRateNum;
-		theFrame = sourceVideoRec->inFrameTime / ticksPerFrame;
+		if (localRecP->frame_times) {
+			const long long timeCodeScale = localRecP->segment->GetInfo()->GetTimeCodeScale();
+			const long long timeCode = ((sourceVideoRec->inFrameTime * (S2NS / timeCodeScale)) + (ticksPerSecond / 2)) / ticksPerSecond;
+			const long long tstamp = (timeCode * timeCodeScale) + localRecP->video_start_tstamp;
+
+
+			csSDK_int32 newTheFrame = mkv_timestamp_to_framenum(*localRecP->frame_times, tstamp);
+
+			theFrame = sourceVideoRec->inFrameTime / ticksPerFrame;
+			DEBUGF("theFrame %li newTheFrame %li\r\n", theFrame, newTheFrame);
+			if (newTheFrame != theFrame) {
+				DEBUGF("!!!!!!!!! theFrame %li <> newTheFrame %li\r\n", theFrame, newTheFrame);
+			}
+			theFrame = newTheFrame;
+		}
+		else {
+			theFrame = sourceVideoRec->inFrameTime / ticksPerFrame;
+		}
 	}
+
+	DEBUGF("SDKGetSourceVideo... get frame %li (inFrameTime %I64d, ticksPerSecond %I64d, ticksPerFrame %I64d, frameRateDen %li, frameRateNum %li)\r\n", theFrame, sourceVideoRec->inFrameTime, ticksPerSecond, ticksPerFrame, localRecP->frameRateDen, localRecP->frameRateNum);
 
 	// Check to see if frame is already in cache
 	result = localRecP->PPixCacheSuite->GetFrameFromCache(	localRecP->importerID,
@@ -2203,6 +2409,7 @@ SDKGetSourceVideo(
 			const long long timeCodeScale = localRecP->segment->GetInfo()->GetTimeCodeScale();
 			const long long timeCode = ((sourceVideoRec->inFrameTime * (S2NS / timeCodeScale)) + (ticksPerSecond / 2)) / ticksPerSecond;
 			const long long tstamp = (timeCode * timeCodeScale) + localRecP->video_start_tstamp;
+			DEBUGF("SDKGetSourceVideo... get frame tstamp %I64d (inFrameTime %I64d, video_start_tstamp %I64d, timeCodeScale %I64d timeCode %I64d)\r\n", tstamp, sourceVideoRec->inFrameTime, localRecP->video_start_tstamp, timeCodeScale, timeCode);
 			
 			
 			vpx_codec_ctx_t &decoder = localRecP->vpx_decoder;
@@ -2245,8 +2452,9 @@ SDKGetSourceVideo(
 					
 					
 					// A more brute foce seek method that doesn't use cues
-					if(pSeekBlockEntry == NULL)
+					if (pSeekBlockEntry == NULL) {
 						pVideoTrack->Seek(tstamp, pSeekBlockEntry);
+					}
 					
 					
 					if(pSeekBlockEntry != NULL)
@@ -2311,14 +2519,17 @@ SDKGetSourceVideo(
 												
 												while(vpx_image_t *img = vpx_codec_get_frame(&decoder, &iter))
 												{
+													DEBUGF("SDKGetSourceVideo... got frame! tstamp %I64d\r\n", tstamp_queue.front());
 													const bool requested_frame = store_vpx_img(img,
 																								localRecP,
 																								sourceVideoRec,
 																								tstamp_queue.front());
 													tstamp_queue.pop();
 													
-													if(requested_frame)
+													if (requested_frame) {
+														DEBUGF("SDKGetSourceVideo... got THE frame!\r\n");
 														got_frame = true;
+													}
 													
 													vpx_img_free(img);
 												}
@@ -2334,7 +2545,7 @@ SDKGetSourceVideo(
 									else
 										result = imMemErr;
 								}
-								
+
 								long status = pCluster->GetNext(pBlockEntry, pBlockEntry);
 								
 								assert(status == 0);
@@ -2351,14 +2562,17 @@ SDKGetSourceVideo(
 								
 								while(vpx_image_t *img = vpx_codec_get_frame(&decoder, &iter))
 								{
+									DEBUGF("SDKGetSourceVideo... got leftover frame! tstamp %I64d\r\n", tstamp_queue.front());
 									const bool requested_frame = store_vpx_img(img,
 																				localRecP,
 																				sourceVideoRec,
 																				tstamp_queue.front());
 									tstamp_queue.pop();
 									
-									if(requested_frame)
+									if (requested_frame) {
+										DEBUGF("SDKGetSourceVideo... got THE leftover frame!\r\n");
 										got_frame = true;
+									}
 									
 									vpx_img_free(img);
 								}
@@ -2367,11 +2581,25 @@ SDKGetSourceVideo(
 							}
 							
 							//assert(got_frame); // otherwise our cluster seek function has failed us (turns out it will)
-							
+
+							if (!got_frame) {
+								DEBUGF("!!!!!!!!!SDKGetSourceVideo... no frame found in this cluster!!\r\n");
+							}
+
 							pCluster = localRecP->segment->GetNext(pCluster);
 						}
 
 						assert(got_frame);
+						if (!got_frame) {
+							DEBUGF("!!!!!!!!!!!!!!SDKGetSourceVideo... no frame found AT ALL!!\r\n");
+							/* 	imFrameNotFound = 28,		// An importer could not find the requested frame (typically used with async importers)
+
+	imDecompressionError = 36,	//	There was an error decompressing audio or video
+	imFileReadFailed = 33,		// A read from an open file failed
+	imOtherErr = 5,				// Unknown Error
+							*/
+							result = imDecompressionError;
+						}
 					}
 				}
 			}
@@ -2379,10 +2607,15 @@ SDKGetSourceVideo(
 		else
 			result = malUnknownError;
 	}
+	else {
+		//DEBUGF("SDKGetSourceVideo... in cache!\r\n");
+	}
+
 
 
 	stdParms->piSuites->memFuncs->unlockHandle(reinterpret_cast<char**>(ldataH));
 
+	DEBUGF("SDKGetSourceVideo: %lu\r\n", result);
 	return result;
 }
 
@@ -2805,6 +3038,771 @@ SDKImportAudio7(
 	return result;
 }
 
+struct SDKAsyncImporterRequest
+{
+	long long theFrame = 0;
+	long long theTimestamp = 0;
+	imFrameFormat frameFormat = { 0 };
+};
+
+DWORD WINAPI WebM_Worker(LPVOID lpParameter);
+
+struct SDKAsyncImporter
+{
+	SDKAsyncImporter(imStdParms* stdParms, ImporterLocalRec8H inRecH)
+		: _cancelEvent(CreateEvent(NULL, TRUE, FALSE, NULL))
+		, _queueEvent(CreateEvent(NULL, FALSE, FALSE, NULL))
+		, _fileRef(NULL)
+		, _timeCodeScale(0)
+		, _workerThread(NULL)
+	{
+		DEBUGF("SDKAsyncImporter\r\n");
+
+		safeLocalRecH = (ImporterLocalRec8H)stdParms->piSuites->memFuncs->newHandle(sizeof(ImporterLocalRec8));
+		memset((*safeLocalRecH), 0, sizeof(ImporterLocalRec8));
+
+		auto safeLocalRecP = *safeLocalRecH;
+		auto inRecP = *inRecH;
+
+		// only copy known safe values
+		safeLocalRecP->importerID = inRecP->importerID;
+		safeLocalRecP->fileType = inRecP->fileType;
+		safeLocalRecP->width = inRecP->width;
+		safeLocalRecP->height = inRecP->height;
+		safeLocalRecP->frameRateNum = inRecP->frameRateNum;
+		safeLocalRecP->frameRateDen = inRecP->frameRateDen;
+		safeLocalRecP->bit_depth = inRecP->bit_depth;
+		safeLocalRecP->video_track = inRecP->video_track;
+		safeLocalRecP->video_codec = inRecP->video_codec;
+		safeLocalRecP->video_start_tstamp = inRecP->video_start_tstamp;
+		safeLocalRecP->img_fmt = inRecP->img_fmt;
+		safeLocalRecP->color_space = inRecP->color_space;
+		safeLocalRecP->color_range = inRecP->color_range;
+
+		// memfuncs and suites should be OK according to sample SDK project
+		safeLocalRecP->memFuncs = inRecP->memFuncs;
+		safeLocalRecP->BasicSuite = inRecP->BasicSuite;
+		safeLocalRecP->PPixCreatorSuite = inRecP->PPixCreatorSuite;
+		safeLocalRecP->PPixCacheSuite = inRecP->PPixCacheSuite;
+		safeLocalRecP->PPixSuite = inRecP->PPixSuite;
+		safeLocalRecP->PPix2Suite = inRecP->PPix2Suite;
+		safeLocalRecP->TimeSuite = inRecP->TimeSuite;
+		safeLocalRecP->FileSuite = inRecP->FileSuite;
+
+		// now duplicate some stuff
+		safeLocalRecP->filepath = _wcsdup(inRecP->filepath);
+		safeLocalRecP->frame_times = new std::vector<long long>(*inRecP->frame_times);
+
+		_timeCodeScale = inRecP->segment->GetInfo()->GetTimeCodeScale();
+	}
+
+	bool Init()
+	{
+		DEBUGF("Init\r\n");
+		auto safeLocalRecP = *safeLocalRecH;
+
+		_fileRef = CreateFileW(safeLocalRecP->filepath,
+			GENERIC_READ,
+			FILE_SHARE_READ,
+			NULL,
+			OPEN_EXISTING,
+			FILE_ATTRIBUTE_NORMAL,
+			NULL);
+
+		if (!_fileRef || _fileRef == imInvalidHandleValue) {
+			return false;
+		}
+
+		return true;
+	}
+
+	~SDKAsyncImporter()
+	{
+		DEBUGF("~SDKAsyncImporter\r\n");
+		auto safeLocalRecP = *safeLocalRecH;
+
+		if (safeLocalRecP->filepath) {
+			free(safeLocalRecP->filepath);
+			safeLocalRecP->filepath = NULL;
+		}
+		if (safeLocalRecP->frame_times) {
+			delete safeLocalRecP->frame_times;
+			safeLocalRecP->frame_times = NULL;
+		}
+		CloseHandle(_cancelEvent);
+		_cancelEvent = NULL;
+
+		if (_fileRef != NULL && _fileRef != INVALID_HANDLE_VALUE) {
+			CloseHandle(_fileRef);
+			_fileRef = NULL;
+		}
+
+		CloseHandle(_workerThread);
+		_workerThread = NULL;
+
+		safeLocalRecP->memFuncs->disposeHandle(reinterpret_cast<char**>(safeLocalRecH));
+	}
+
+	//
+	std::mutex _mtx; // use eg std::scoped_lock lock(_mtx)
+	ImporterLocalRec8H safeLocalRecH;
+	imFileRef _fileRef;
+
+	long long _timeCodeScale;
+
+	// signalled when flushing or closing
+	HANDLE _cancelEvent;
+	HANDLE _queueEvent;
+
+	HANDLE _workerThread;
+
+	std::vector<SDKAsyncImporterRequest> _pendingRequests;
+
+	// events from host
+
+	int OnInitiateAsyncRead(imSourceVideoRec* sourceVideoRec)
+	{
+		auto safeLocalRecP = *safeLocalRecH;
+
+		PrTime ticksPerSecond = 0;
+		safeLocalRecP->TimeSuite->GetTicksPerSecond(&ticksPerSecond);
+
+		long long theTimestamp = 0;
+
+		csSDK_int32 theFrame = 0;
+		{
+
+			const long long timeCode = ((sourceVideoRec->inFrameTime * (S2NS / _timeCodeScale)) + (ticksPerSecond / 2)) / ticksPerSecond;
+			const long long tstamp = (timeCode * _timeCodeScale) + safeLocalRecP->video_start_tstamp;
+
+			theFrame = mkv_timestamp_to_framenum(*safeLocalRecP->frame_times, tstamp);
+			theTimestamp = tstamp;
+		}
+		DEBUGF("OnInitiateAsyncRead %li, %I64d\r\n", theFrame, theTimestamp);
+
+		{
+			PPixHand		tempPPH = NULL;
+
+			auto result = safeLocalRecP->PPixCacheSuite->GetFrameFromCache(safeLocalRecP->importerID,
+				0,
+				theFrame,
+				1,
+				sourceVideoRec->inFrameFormats,
+				&tempPPH,
+				NULL,
+				NULL);
+
+			if (result == suiteError_NoError) {
+				// SDK sample disposes of this, but why not put it in the sourceVideoRec outFrame?
+				// apparently has to do with formats or etc?
+				// will just defer to that behavior for now
+
+				// If so, we're done.  There's no need to pass the frame back.
+
+				// Dispose of PPH
+				(safeLocalRecP)->PPixSuite->Dispose(tempPPH);
+
+				return aiNoError;
+			}
+		}
+
+		// otherwise queue up the request in GetFrame so we have formats?
+		{
+			std::scoped_lock lock(_mtx);
+
+			if (!_workerThread) {
+				_workerThread = CreateThread(NULL, 0, WebM_Worker, this, 0, NULL);
+			}
+		}
+
+		return aiNoError;
+	}
+
+	int OnContinueToWaitForAsyncIO(imSourceVideoRec& inSourceRec)
+	{
+		//DEBUGF("OnContinueToWaitForAsyncIO\r\n");
+		long long count = 0;
+		{
+			std::scoped_lock lock(_mtx);
+
+			count = _pendingRequests.size();
+		}
+
+		if (count > 0) {
+			return aiUnsupported;
+		}
+		else {
+			return aiUnsupported;
+		}
+	}
+	
+	int OnCancelAsyncRead(imSourceVideoRec& inSourceRec)
+	{
+		return aiUnsupported;
+	}
+
+	int OnFlush()
+	{
+		DEBUGF("OnFlush\r\n");
+		SetEvent(_cancelEvent);
+		WaitForSingleObject(_workerThread, INFINITE);
+
+		return aiNoError;
+	}
+
+	int OnClose()
+	{
+		DEBUGF("OnClose\r\n");
+		SetEvent(_cancelEvent);
+		WaitForSingleObject(_workerThread, INFINITE);
+
+		return aiNoError;
+	}
+
+	int OnGetFrame(imSourceVideoRec* sourceVideoRec)
+	{
+		auto safeLocalRecP = *safeLocalRecH;
+
+		PrTime ticksPerSecond = 0;
+		safeLocalRecP->TimeSuite->GetTicksPerSecond(&ticksPerSecond);
+
+		long long theTimestamp = 0;
+
+		csSDK_int32 theFrame = 0;
+		{
+
+			const long long timeCode = ((sourceVideoRec->inFrameTime * (S2NS / _timeCodeScale)) + (ticksPerSecond / 2)) / ticksPerSecond;
+			const long long tstamp = (timeCode * _timeCodeScale) + safeLocalRecP->video_start_tstamp;
+
+			theFrame = mkv_timestamp_to_framenum(*safeLocalRecP->frame_times, tstamp);
+			theTimestamp = tstamp;
+		}
+
+		//DEBUGF("OnGetFrame %li, %I64d\r\n", theFrame, theTimestamp);
+
+		{
+			PPixHand		tempPPH = NULL;
+
+			auto result = safeLocalRecP->PPixCacheSuite->GetFrameFromCache(safeLocalRecP->importerID,
+				0,
+				theFrame,
+				1,
+				sourceVideoRec->inFrameFormats,
+				&tempPPH,
+				NULL,
+				NULL);
+
+			if (result == suiteError_NoError) {
+				*(sourceVideoRec->outFrame) = tempPPH;
+				DEBUGF("OnGetFrame found frame %li, %I64d\r\n", theFrame, theTimestamp);
+
+				return aiNoError;
+			}
+		}
+
+		// otherwise queue up the request now that we have format info
+
+		SDKAsyncImporterRequest newRequest;
+		newRequest.theFrame = theFrame;
+		newRequest.theTimestamp = theTimestamp;
+		newRequest.frameFormat = sourceVideoRec->inFrameFormats[0];
+		{
+			std::scoped_lock lock(_mtx);
+
+			if (_pendingRequests.end() == std::find_if(_pendingRequests.begin(), _pendingRequests.end(), [&newRequest](auto a) { return a.theFrame == newRequest.theFrame && a.frameFormat.inFrameWidth == newRequest.frameFormat.inFrameWidth && a.frameFormat.inFrameHeight == newRequest.frameFormat.inFrameHeight && a.frameFormat.inPixelFormat == newRequest.frameFormat.inPixelFormat; })) {
+				_pendingRequests.push_back(newRequest);
+				DEBUGF("OnGetFrame %I64d pending, now waiting for frame %li, %I64d\r\n", _pendingRequests.size(), theFrame, theTimestamp);
+			}
+		}
+		SetEvent(_queueEvent);
+
+		return aiFrameNotFound;
+	}
+
+	//
+
+
+	bool IsCancelled() const
+	{
+		auto ret = WaitForSingleObject(_cancelEvent, 0);
+		return WAIT_OBJECT_0 == ret;
+	}
+};
+
+
+static bool
+store_vpx_img_fromasync(
+	const vpx_image_t* img,
+	ImporterLocalRec8Ptr localRecP,
+	imFrameFormat frameFormat,
+	const long long decoded_tstamp,
+	const long long theFrame)
+{
+	prRect theRect;
+	if (frameFormat.inFrameWidth == 0 && frameFormat.inFrameHeight == 0)
+	{
+		frameFormat.inFrameWidth = localRecP->width;
+		frameFormat.inFrameHeight = localRecP->height;
+	}
+
+	// Windows and MacOS have different definitions of Rects, so use the cross-platform prSetRect
+	prSetRect(&theRect, 0, 0, frameFormat.inFrameWidth, frameFormat.inFrameHeight);
+
+	assert(frameFormat.inFrameHeight == img->d_h && frameFormat.inFrameWidth == img->d_w);
+
+	vpx_img_fmt img_fmt = img->fmt;
+
+	// maybe Premiere doesn't want 16-bit right now
+	if (img_fmt & VPX_IMG_FMT_HIGHBITDEPTH)
+	{
+		if (frameFormat.inPixelFormat != PrPixelFormat_BGRA_4444_16u) // the only 16-bit format we currently support
+		{
+			img_fmt = (img_fmt == VPX_IMG_FMT_I42216 ? VPX_IMG_FMT_I422 :
+				img_fmt == VPX_IMG_FMT_I44016 ? VPX_IMG_FMT_I440 :
+				img_fmt == VPX_IMG_FMT_I44416 ? VPX_IMG_FMT_I444 :
+				VPX_IMG_FMT_I420);
+		}
+	}
+
+
+	// apparently pix_format doesn't have to match frameFormat->inPixelFormat
+	const PrPixelFormat pix_format = vpx_to_premiere_pix_format(img_fmt);
+
+	PPixHand ppix;
+
+	localRecP->PPixCreatorSuite->CreatePPix(&ppix, PrPPixBufferAccess_ReadWrite, pix_format, &theRect);
+
+
+	CopyImgToPix(img, ppix, localRecP->PPixSuite, localRecP->PPix2Suite);
+
+
+	csSDK_int32 decodedFrame = mkv_timestamp_to_framenum(*localRecP->frame_times, decoded_tstamp);
+
+	const bool requested_frame = (decodedFrame == theFrame);
+
+	// This is a nice Premiere feature.  We often have to decode many frames
+	// in a GOP (group of pictures) before we decode the one Premiere asked for.
+	// This suite lets us cache those frames for later.  We keep going past the
+	// requested frame to end of the cluster to save us the trouble in the future.
+	DEBUGF("WebM_Worker store_vpx_img_fromasync Adding frame %li / %I64d target %I64d\r\n", decodedFrame, decoded_tstamp, theFrame);
+	localRecP->PPixCacheSuite->AddFrameToCache(localRecP->importerID,
+		0,
+		ppix,
+		decodedFrame,
+		NULL,
+		NULL);
+
+	//DEBUGF("store_vpx_img_fromasync Disposing frame\r\n");
+	// Premiere copied the frame to its cache, so we dispose ours.
+	// Very obvious memory leak if we don't.
+	localRecP->PPixSuite->Dispose(ppix);
+
+	if (decodedFrame == theFrame) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+DWORD WINAPI WebM_Worker(LPVOID lpParameter)
+{
+	DEBUGF("WebM_Worker starting...\r\n")
+	auto pImporter = (SDKAsyncImporter*)lpParameter;
+
+	auto carefulLocalRecP = *pImporter->safeLocalRecH;
+
+	auto reader = new PrMkvReader(pImporter->_fileRef);
+	mkvparser::Segment* segment = NULL;
+
+	long long pos = 0;
+	mkvparser::EBMLHeader ebmlHeader;
+
+	ebmlHeader.Parse(reader, pos);
+
+	long long ret = mkvparser::Segment::CreateInstance(reader, pos, segment);
+
+	if (ret >= 0 && segment != NULL)
+	{
+		ret = segment->Load();
+
+		if (ret >= 0)
+		{
+			// Load Cue Points
+			// For some reason the segment constuctor doesn't do this on its own
+			const mkvparser::Cues* const cues = segment->GetCues();
+
+			if (cues != NULL)
+			{
+				assert(cues->GetFirst() == NULL);
+
+				while (!cues->DoneParsing())
+					cues->LoadCuePoint();
+
+				assert(cues->GetFirst() != NULL);
+			}
+		}
+	}
+
+
+	if (carefulLocalRecP->video_track <= 0) {
+		// uh oh
+	}
+
+	const mkvparser::Tracks* pTracks = segment->GetTracks();
+	const mkvparser::Track* const pTrack = pTracks->GetTrackByNumber(carefulLocalRecP->video_track);
+
+	if (!pTrack || pTrack->GetType() != mkvparser::Track::kVideo) {
+		// uh oh
+	}
+	const mkvparser::VideoTrack* const pVideoTrack = static_cast<const mkvparser::VideoTrack*>(pTrack);
+
+	const char* codec_id = pVideoTrack->GetCodecId();
+
+	const vpx_codec_iface_t* iface = (codec_id == std::string("V_VP8") ? vpx_codec_vp8_dx() :
+		codec_id == std::string("V_VP9") ? vpx_codec_vp9_dx() :
+		NULL);
+
+	vpx_codec_err_t codec_err = VPX_CODEC_OK;
+
+
+	if (!iface)
+	{
+		// uh oh
+	}
+
+	vpx_codec_ctx_t decoder = { 0 };
+	{
+		vpx_codec_dec_cfg_t config;
+		config.threads = g_num_cpus;
+		config.w = pVideoTrack->GetWidth();
+		config.h = pVideoTrack->GetHeight();
+
+		// TODO: Explore possibilities of decoding options by setting
+		// VPX_CODEC_USE_POSTPROC here.  Things like VP8_DEMACROBLOCK and
+		// VP8_MFQE (Multiframe Quality Enhancement) could be cool.
+
+		// note that VPX_CODEC_USE_FRAME_THREADING is a noop in at least vp9 - it was removed from the dec entirely
+		//const vpx_codec_flags_t flags = VPX_CODEC_USE_FRAME_THREADING;
+		const vpx_codec_flags_t flags = 0;
+
+		codec_err = vpx_codec_dec_init(&decoder, iface, &config, flags);
+
+		if (codec_err != VPX_CODEC_OK) {
+			// uh oh
+		}
+	}
+
+	// now loop for work!
+	HANDLE objs[] = { pImporter->_cancelEvent, pImporter->_queueEvent };
+
+	DWORD waitResult = 0;
+	for (;;) {
+		waitResult = WaitForMultipleObjects(2, objs, FALSE, INFINITE);
+
+		if (waitResult != WAIT_OBJECT_0 + 1) {
+			// something went wrong
+			break;
+		}
+
+		// we have data!
+		std::vector<SDKAsyncImporterRequest> requests;
+		{
+			std::scoped_lock lock(pImporter->_mtx);
+			swap(requests, pImporter->_pendingRequests);
+		}
+
+		for (auto request : requests) {
+			DEBUGF("WebM_Worker looking at request for %I64d / %I64d...\r\n", request.theFrame, request.theTimestamp);
+			{
+				PPixHand		tempPPH = NULL;
+
+				auto result = carefulLocalRecP->PPixCacheSuite->GetFrameFromCache(carefulLocalRecP->importerID,
+					0,
+					request.theFrame,
+					1,
+					&request.frameFormat,
+					&tempPPH,
+					NULL,
+					NULL);
+
+				if (result == suiteError_NoError) {
+					// SDK sample disposes of this, but why not put it in the sourceVideoRec outFrame?
+					// apparently has to do with formats or etc?
+					// will just defer to that behavior for now
+
+					// If so, we're done.  There's no need to pass the frame back.
+
+					// Dispose of PPH
+					DEBUGF("WebM_Worker: found cached frame for %I64d / %I64d!\r\n", request.theFrame, request.theTimestamp);
+					(carefulLocalRecP)->PPixSuite->Dispose(tempPPH);
+
+					continue;
+				}
+			}
+
+			assert(pVideoTrack->GetSeekPreRoll() == 0);
+			assert(pVideoTrack->GetCodecDelay() == 0);
+
+			const mkvparser::BlockEntry* pSeekBlockEntry = NULL;
+
+
+			// If the file has Cues, we'll use them to seek.
+			// Expect to have one cue for each keyframe, and each keyframe
+			// should begin a new cluster.  This will not always be the case, though.
+			const mkvparser::Cues* const cues = segment->GetCues();
+
+			if (cues != NULL)
+			{
+				assert(cues->GetFirst() != NULL);
+
+				const mkvparser::CuePoint* cue = NULL;
+				const mkvparser::CuePoint::TrackPosition* pTrackPos = NULL;
+
+				const bool seek_success = cues->Find(request.theTimestamp, pVideoTrack, cue, pTrackPos);
+
+				if (seek_success && cue != NULL && pTrackPos != NULL)
+				{
+					pSeekBlockEntry = cues->GetBlock(cue, pTrackPos);
+				}
+			}
+
+			// A more brute foce seek method that doesn't use cues
+			if (pSeekBlockEntry == NULL) {
+				pVideoTrack->Seek(request.theTimestamp, pSeekBlockEntry);
+			}
+			if (pSeekBlockEntry == NULL)
+			{
+				// uh oh
+			}
+
+			const mkvparser::Cluster* pCluster = pSeekBlockEntry->GetCluster();
+
+			// The seek took us to this Cluster for a reason.
+			// It should start with a keyframe, although not necessarily the last keyframe before
+			// the requested frame. I have to decode each frame starting with the keyframe,
+			// and then I continue afterwards until I decode the entire cluster.
+			// TODO: Maybe we should seek for keyframes within the cluster.
+
+			assert(request.tstamp >= pSeekBlockEntry->GetBlock()->GetTime(pCluster));
+			assert(request.tstamp >= pCluster->GetTime());
+
+			bool got_frame = false;
+
+			while ((pCluster != NULL) && !pCluster->EOS() && !got_frame)
+			{
+				assert(pCluster->GetTime() >= 0);
+				assert(pCluster->GetTime() == pCluster->GetFirstTime());
+				assert(got_frame || request.tstamp >= pCluster->GetTime());
+
+				std::queue<long long> tstamp_queue;
+
+				const mkvparser::BlockEntry* pBlockEntry = NULL;
+
+				pCluster->GetFirst(pBlockEntry);
+
+				while ((pBlockEntry != NULL) && !pBlockEntry->EOS())
+				{
+					const mkvparser::Block* pBlock = pBlockEntry->GetBlock();
+
+					if (pBlock->GetTrackNumber() == carefulLocalRecP->video_track)
+					{
+						assert(pBlock->GetFrameCount() == 1);
+						assert(pBlock->GetDiscardPadding() == 0);
+
+						long long packet_tstamp = pBlock->GetTime(pCluster);
+
+						const mkvparser::Block::Frame& blockFrame = pBlock->GetFrame(0);
+
+						const unsigned int length = blockFrame.len;
+						uint8_t* data = (uint8_t*)malloc(length);
+
+						//int read_err = localRecP->reader->Read(blockFrame.pos, blockFrame.len, data);
+						const long read_err = blockFrame.Read(reader, data);
+
+						if (read_err == PrMkvReader::PrMkvSuccess)
+						{
+							const vpx_codec_err_t decode_err = vpx_codec_decode(&decoder, data, length, NULL, 0);
+
+							assert(decode_err == VPX_CODEC_OK);
+
+							if (decode_err == VPX_CODEC_OK)
+							{
+								tstamp_queue.push(packet_tstamp);
+
+								vpx_codec_iter_t iter = NULL;
+
+								while (vpx_image_t* img = vpx_codec_get_frame(&decoder, &iter))
+								{
+									DEBUGF("WebM_Worker... got frame! tstamp %I64d\r\n", tstamp_queue.front());
+									if (store_vpx_img_fromasync(img,
+										carefulLocalRecP,
+										request.frameFormat,
+										tstamp_queue.front(),
+										request.theFrame))
+									{
+										DEBUGF("WebM_Worker... got target frame %I64d / %I64d! tstamp %I64d\r\n", request.theFrame, request.theTimestamp, tstamp_queue.front());
+										got_frame = true;
+									}
+									tstamp_queue.pop();
+
+									vpx_img_free(img);
+								}
+							}
+							else {
+								// uh oh
+								//result = imFileReadFailed;
+							}
+						}
+						else {
+							// uh oh
+							//result = imFileReadFailed;
+						}
+
+						free(data);
+					}
+
+					long status = pCluster->GetNext(pBlockEntry, pBlockEntry);
+
+					assert(status == 0);
+				}
+
+				// clear out any more frames left over from the multithreaded decode
+				//if (result == malNoError)
+				{
+					const vpx_codec_err_t decode_err = vpx_codec_decode(&decoder, NULL, 0, NULL, 0);
+
+					assert(decode_err == VPX_CODEC_OK);
+
+					vpx_codec_iter_t iter = NULL;
+
+					while (vpx_image_t* img = vpx_codec_get_frame(&decoder, &iter))
+					{
+						DEBUGF("WebM_Worker... got leftover frame! tstamp %I64d\r\n", tstamp_queue.front());
+						store_vpx_img_fromasync(img,
+							carefulLocalRecP,
+							request.frameFormat,
+							tstamp_queue.front(),
+							request.theFrame);
+						tstamp_queue.pop();
+
+						vpx_img_free(img);
+					}
+
+					assert(tstamp_queue.size() == 0);
+				}
+
+				//assert(got_frame); // otherwise our cluster seek function has failed us (turns out it will)
+
+				if (got_frame) {
+					break;
+				}
+				else {
+					DEBUGF("WebM_Worker... moving to next cluster... %I64d / %I64d\r\n", request.theFrame, request.theTimestamp);
+					pCluster = segment->GetNext(pCluster);
+				}
+			}
+
+			assert(got_frame);
+		}
+	}
+
+	DEBUGF("WebM_Worker closing\r\n");
+	vpx_codec_err_t destroy_err = vpx_codec_destroy(&decoder);
+	delete segment;
+	delete reader;
+
+	return 0;
+}
+
+PREMPLUGENTRY xAsyncImportEntry(
+	int		inSelector,
+	void* inParam)
+{
+	csSDK_int32			result = aiUnsupported;
+	SDKAsyncImporter* asyncImporter = 0;
+
+	switch (inSelector)
+	{
+	case aiInitiateAsyncRead:
+	{
+		aiAsyncRequest* asyncRequest(reinterpret_cast<aiAsyncRequest*>(inParam));
+		asyncImporter = reinterpret_cast<SDKAsyncImporter*>(asyncRequest->inPrivateData);
+		result = asyncImporter->OnInitiateAsyncRead(&asyncRequest->inSourceRec);
+		break;
+	}
+	case aiCancelAsyncRead:
+	{
+		aiAsyncRequest* asyncRequest(reinterpret_cast<aiAsyncRequest*>(inParam));
+		asyncImporter = reinterpret_cast<SDKAsyncImporter*>(asyncRequest->inPrivateData);
+		result = asyncImporter->OnCancelAsyncRead(asyncRequest->inSourceRec);
+		break;
+	}
+	case aiFlush:
+	{
+		/*
+Purpose:	Called to cancel all pending and executing requests. The async importer should
+			block until all executing requests are completed or abandoned. No other calls will
+			be made while aiFlush is occurring. aiFlush will always be called prior to
+			aiClose.
+		*/
+		asyncImporter = reinterpret_cast<SDKAsyncImporter*>(inParam);
+		result = asyncImporter->OnFlush();
+		break;
+	}
+	case aiGetFrame:
+	{
+		imSourceVideoRec* getFrameRec(reinterpret_cast<imSourceVideoRec*>(inParam));
+		asyncImporter = reinterpret_cast<SDKAsyncImporter*>(getFrameRec->inPrivateData);
+		result = asyncImporter->OnGetFrame(getFrameRec);
+		break;
+	}
+	case aiClose:
+	{
+		/*
+Purpose:	Called to dispose of the async importer. It is appropriate for this call to block
+			pending the completion of existing async operations.
+
+			inParam:	inPrivateData
+		*/
+		asyncImporter = reinterpret_cast<SDKAsyncImporter*>(inParam);
+		result = asyncImporter->OnClose();
+		delete asyncImporter;
+		result = aiNoError;
+		break;
+	}
+	case aiContinueToWaitForAsyncIO:
+	{
+		aiAsyncRequest* asyncRequest(reinterpret_cast<aiAsyncRequest*>(inParam));
+		asyncImporter = reinterpret_cast<SDKAsyncImporter*>(asyncRequest->inPrivateData);
+		result = asyncImporter->OnContinueToWaitForAsyncIO(asyncRequest->inSourceRec);
+		break;
+	}
+	}
+
+	return result;
+}
+
+static prMALError
+SDKCreateAsyncImporter(
+	imStdParms* stdparms,
+	imAsyncImporterCreationRec* asyncImporterCreationRec)
+{
+	prMALError		result = malNoError;
+
+	// Set entry point for async importer
+	asyncImporterCreationRec->outAsyncEntry = xAsyncImportEntry;
+
+	// Create and initialize async importer
+	// Deleted during aiClose
+	SDKAsyncImporter* asyncImporter = new SDKAsyncImporter(stdparms, reinterpret_cast<ImporterLocalRec8H>(asyncImporterCreationRec->inPrivateData));
+	asyncImporter->Init();
+
+	// Store importer as private data
+	asyncImporterCreationRec->outAsyncPrivateData = reinterpret_cast<void*>(asyncImporter);
+	return result;
+}
+
 
 PREMPLUGENTRY DllExport xImportEntry (
 	csSDK_int32		selector, 
@@ -2888,7 +3886,12 @@ PREMPLUGENTRY DllExport xImportEntry (
 			break;
 
 		case imCreateAsyncImporter:
+#ifndef ENABLE_ASYNC_IMPORTER
 			result =	imUnsupported;
+#else
+			result = SDKCreateAsyncImporter(stdParms,
+				reinterpret_cast<imAsyncImporterCreationRec*>(param1));
+#endif
 			break;
 	}
 	

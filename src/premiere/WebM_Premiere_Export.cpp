@@ -64,9 +64,19 @@
 #include <vorbis/codec.h>
 #include <vorbis/vorbisenc.h>
 
-#include "opus_multistream.h"
+#include "opus/opus_multistream.h"
 
-#include "mkvmuxer/mkvmuxer.h"
+#include "webm/common/webmids.h"
+#include "webm/mkvmuxer/mkvmuxertypes.h"
+#include "webm/mkvmuxer/mkvmuxer.h"
+
+/*
+const char mkvmuxer::Tracks::kOpusCodecId[] = "A_OPUS";
+const char mkvmuxer::Tracks::kVorbisCodecId[] = "A_VORBIS";
+const char mkvmuxer::Tracks::kVp8CodecId[] = "V_VP8";
+const char mkvmuxer::Tracks::kVp9CodecId[] = "V_VP9"; 
+const uint64_t mkvmuxer::Colour::kValueNotPresent = LLONG_MAX;
+*/
 
 
 class PrMkvWriter : public mkvmuxer::IMkvWriter
@@ -146,8 +156,6 @@ PrMkvWriter::ElementStartNotify(uint64_t element_id, int64_t position)
 	// ummm, should I do something?
 }
 
-
-#pragma mark-
 
 
 static const csSDK_int32 WebM_ID = 'WebM';
